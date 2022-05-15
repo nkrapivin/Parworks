@@ -1,0 +1,2 @@
+#define PAR_API __declspec(dllexport)
+#define PAR_API __declspec(dllimport)
