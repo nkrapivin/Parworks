@@ -15,6 +15,21 @@ if (_num > 0) {
 	if (!justthisonce) {
 		justthisonce = true;
 		ParInput_EnableActionEventCallbacks(onActionEventIndex);
+		
+		var _path = ParInput_GetGlyphPNGForActionOrigin(
+			EInputActionOrigin.k_PS4_Circle,
+			ESteamInputGlyphSize.k_Medium,
+			0
+		);
+		// ^^ if the _path exists, Parworks will add this file into the GameMaker whitelist
+		// no need to do the sandbox funnies
+		if (file_exists(_path)) {
+			// removeback and smooth MUST BE FALSE
+			// origin can be set to the middle if you want
+			sprite_index = sprite_add(_path, 1, false, false, 0, 0);
+			x = 256;
+			y = 256;
+		}
 	}
 }
 

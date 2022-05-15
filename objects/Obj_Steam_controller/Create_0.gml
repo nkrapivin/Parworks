@@ -6,11 +6,19 @@ randomize();
 
 #macro SteamLeaderboard "YYLeaderboard_10/29/21--"
 
+zero = int64(0);
+
+
+
 // initialize Steam Input:
 var _ok = ParInput_Init(false);
 show_debug_message("ParInput_Init(): " + string(_ok));
+if (!_ok)
+	throw "\nUnable to initialize Parworks or ParInput";
+	
+ParInput_EnableDeviceCallbacks();
 
-zero = int64(0);
+
 
 // theyre all int64s!!
 mycon = zero;
