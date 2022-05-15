@@ -593,3 +593,23 @@ enum EFloatingGamepadTextInputMode {
 
 };
 
+// Input modes for the Big Picture gamepad text entry
+enum EGamepadTextInputMode {
+	k_Normal = 0,
+	k_Password = 1
+};
+
+// Controls number of allowed lines for the Big Picture gamepad text entry
+enum EGamepadTextInputLineMode {
+	k_SingleLine = 0,
+	k_MultipleLines = 1
+};
+
+// The context where text filtering is being done
+enum ETextFilteringContext {
+	k_Unknown = 0,	// Unknown context
+	k_GameContent = 1,	// Game content, only legally required filtering is performed
+	k_Chat = 2,	// Chat from another player
+	k_Name = 3,	// Character or item name
+};
+

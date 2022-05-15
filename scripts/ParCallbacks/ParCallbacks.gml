@@ -24,6 +24,33 @@ function Par_OnSteamInputDeviceDisconnected(pParam) {
 /// @param pParam FloatingGamepadTextInputDismissed_t* see Steamworks SDK documentation
 function Par_OnFloatingGamepadTextInputDismissed(pParam) {
 	show_debug_message("Par_OnFloatingGamepadTextInputDismissed: " + json_stringify(pParam));
+	
+	with (Obj_Steam_GeneralInfo) {
+		txt += "Floating Keyboard Dismissed! get_timer()=" + string(get_timer()) + "\n";
+	}
+}
+
+/// @param pParam GamepadTextInputDismissed_t* see Steamworks SDK documentation
+function Par_OnGamepadTextInputDismissed(pParam) {
+	show_debug_message("Par_OnGamepadTextInputDismissed: " + json_stringify(pParam));
+	var _textRef = {}; // must be an empty struct
+	var _len = ParUtils_GetEnteredGamepadTextLength();
+	ParUtils_GetEnteredGamepadTextInput(_textRef, _len);
+	var _text = _textRef.refval;
+	
+	with (Obj_Steam_GeneralInfo) {
+		txt += "Tenfoot Keyboard Dismissed! t=" + string(get_timer()) + ",s='" + _text + "'." + "\n";
+	}
+}
+
+/// @param pParam AppResumingFromSuspend_t* see Steamworks SDK documentation
+function Par_OnAppResumingFromSuspend(pParam) {
+	show_debug_message("Par_OnAppResumingFromSuspend: " + json_stringify(pParam));
+}
+
+/// @param pParam SteamShutdown_t* see Steamworks SDK documentation
+function Par_OnSteamShutdown(pParam) {
+	show_debug_message("Par_OnSteamShutdown: " + json_stringify(pParam));
 }
 
 /*-- DO NOT TOUCH THE STUFF BELOW --*/
@@ -88,8 +115,10 @@ function Par_OnFloatingGamepadTextInputDismissed(pParam) {
 
 
 
+
 function _Par_CallbackHost() constructor {
 	// has nothing, this is a `self` for all Par callback functions
+	m_bFlag = false; // unused
 }
 
 // must be static!
@@ -100,4 +129,7 @@ Par_ScriptCallSetup(_Par_F_ScriptExecute, _Par_CallbackSelf);
 function ParCallbacks() {
 	return "<ParCallbacks>: Do not call this function!";
 }
+
+
+
 

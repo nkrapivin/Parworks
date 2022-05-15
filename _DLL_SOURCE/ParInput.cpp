@@ -162,6 +162,7 @@ funcdef(ParInput_EnableActionEventCallbacks) {
 
 funcdef(ParInput_GetActionSetHandle) {
 	ensureargc(1);
+	ensurekind(0, eRVK_STRING);
 
 	Result = RValue{
 		SteamInput()->GetActionSetHandle(
@@ -672,8 +673,10 @@ funcdef(ParInput_TranslateActionOrigin) {
 funcdef(ParInput_GetDeviceBindingRevision) {
 	ensureargc(3);
 	ensurekind(0, eRVK_INT64);
+	ensurekind(1, eRVK_OBJECT);
+	ensurekind(2, eRVK_OBJECT);
 
-	int major{}, minor{};
+	int major{ }, minor{ };
 
 	auto res{
 		SteamInput()->GetDeviceBindingRevision(
@@ -683,8 +686,8 @@ funcdef(ParInput_GetDeviceBindingRevision) {
 		)
 	};
 
-	ParGM()->StructAddInt(&Result, "refval", major);
-	ParGM()->StructAddInt(&Result, "refval", minor);
+	ParGM()->StructAddInt(&argument[1], "refval", major);
+	ParGM()->StructAddInt(&argument[2], "refval", minor);
 
 	Result = RValue{ res };
 }

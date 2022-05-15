@@ -127,9 +127,85 @@ static void Par_OnFloatingGamepadTextInputDismissed(FloatingGamepadTextInputDism
 	);
 }
 
+static void Par_OnGamepadTextInputDismissed(GamepadTextInputDismissed_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	RValue args[2]{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue bSubmitted{ pParam->m_bSubmitted };
+	RValue unSubmittedText{ pParam->m_unSubmittedText };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_bSubmitted", &bSubmitted);
+	ParGM()->StructAddRValue(&args[1], "m_unSubmittedText", &unSubmittedText);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		sizeof(args) / sizeof(args[0]),
+		args
+	);
+}
+
+static void Par_OnAppResumingFromSuspend(AppResumingFromSuspend_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	RValue args[2]{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		sizeof(args) / sizeof(args[0]),
+		args
+	);
+}
+
+static void Par_OnSteamShutdown(SteamShutdown_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	RValue args[2]{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		sizeof(args) / sizeof(args[0]),
+		args
+	);
+}
+
 CParGMCalls::CParGMCalls() {
 	m_bIsReady = false;
-	// the internal callback fields have constructors and are auto-initialized.
+	// the internal steamworks callback fields have constructors and are auto-initialized.
 }
 
 CParGMCalls* ParGMCalls() {
@@ -138,6 +214,10 @@ CParGMCalls* ParGMCalls() {
 	}
 
 	return _ParGMCalls;
+}
+
+void CParGMCalls::SetIsReady(bool bNewIsReady) {
+	m_bIsReady = bNewIsReady;
 }
 
 void CParGMCalls::OnSteamInputConfigurationLoaded(SteamInputConfigurationLoaded_t* pParam) {
@@ -170,6 +250,30 @@ void CParGMCalls::OnFloatingGamepadTextInputDismissed(FloatingGamepadTextInputDi
 	}
 
 	Par_OnFloatingGamepadTextInputDismissed(pParam);
+}
+
+void CParGMCalls::OnGamepadTextInputDismissed(GamepadTextInputDismissed_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnGamepadTextInputDismissed(pParam);
+}
+
+void CParGMCalls::OnAppResumingFromSuspend(AppResumingFromSuspend_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnAppResumingFromSuspend(pParam);
+}
+
+void CParGMCalls::OnSteamShutdown(SteamShutdown_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnSteamShutdown(pParam);
 }
 
 parex
@@ -206,8 +310,9 @@ funcdef(Par_ScriptCallSetup) {
 
 	F_ScriptExecute = argument[0].scref->m_callCpp;
 	g_pGlobal = argument[1].obj;
-	ParGMCalls()->m_bIsReady = true;
+	// activate the callback listener thingy
+	ParGMCalls()->SetIsReady(true);
 
-	printf("[Par]: ScriptCallSetup is ready: script_execute=0x%p,globalptr=%p\n", F_ScriptExecute, g_pGlobal);
+	printf("[Par]: ScriptCallSetup is ready, script_execute=0x%p,globalptr=0x%p\n", F_ScriptExecute, g_pGlobal);
 	fflush(stdout);
 }

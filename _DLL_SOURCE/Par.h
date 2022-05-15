@@ -14,6 +14,8 @@
 
 // TODO: replace with a more type safe cast?
 #define parcast static_cast
+#define cparcast const_cast
+#define rparcast reinterpret_cast
 
 #include "ParGM.h"
 
@@ -25,9 +27,11 @@ public:
 
 	CParGMCalls();
 
-	bool m_bIsReady;
+	virtual void SetIsReady(bool bNewIsReady);
 
 private:
+
+	bool m_bIsReady;
 
 	STEAM_CALLBACK( CParGMCalls, OnSteamInputConfigurationLoaded,     SteamInputConfigurationLoaded_t     );
 
@@ -36,6 +40,12 @@ private:
 	STEAM_CALLBACK( CParGMCalls, OnSteamInputDeviceDisconnected,      SteamInputDeviceDisconnected_t      );
 
 	STEAM_CALLBACK( CParGMCalls, OnFloatingGamepadTextInputDismissed, FloatingGamepadTextInputDismissed_t );
+
+	STEAM_CALLBACK( CParGMCalls, OnGamepadTextInputDismissed,         GamepadTextInputDismissed_t         );
+
+	STEAM_CALLBACK( CParGMCalls, OnAppResumingFromSuspend,            AppResumingFromSuspend_t            );
+
+	STEAM_CALLBACK( CParGMCalls, OnSteamShutdown,                     SteamShutdown_t                     );
 
 	// -- end   -- //
 };

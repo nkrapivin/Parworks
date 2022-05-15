@@ -24,4 +24,8 @@ draw_text(50, 100 + _i++ * 30,"steam_get_app_id: " + string(steam_get_app_id()))
 draw_text(50, 100 + _i++ * 30,"steam_is_screenshot_requested: " + string(steam_is_screenshot_requested()));
 
 draw_text(50, 100 + _i++ * 30,"steam_is_subscribed: " + string(steam_is_subscribed()));
+draw_text(50, 100 + _i++ * 30,"keyboard_string: '" + string(keyboard_string) + "'");
+draw_text(50, 100 + _i++ * 30,"%SteamTenfoot%: " + string(environment_get_variable("SteamTenfoot")));
+draw_text(50, 100 + _i++ * 30,"Par/IsSteamInBigPictureMode(): " + string(ParUtils_IsSteamInBigPictureMode()));
+draw_text(50, 100 + _i++ * 30,txt);
 
