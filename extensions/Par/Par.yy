@@ -256,6 +256,7 @@
         {"externalName":"Par_DummyFunction","kind":1,"help":"Par_DummyFunction()","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"Par_DummyFunction","tags":[],"resourceType":"GMExtensionFunction",},
       ],"constants":[],"ProxyFiles":[
         {"TargetMask":6,"resourceVersion":"1.0","name":"Par_x64.dll","tags":[],"resourceType":"GMProxyFile",},
+        {"TargetMask":7,"resourceVersion":"1.0","name":"libPar_linux.so","tags":[],"resourceType":"GMProxyFile",},
       ],"copyToTargets":194,"order":[
         {"name":"Par_YYExtensionInitialise","path":"extensions/Par/Par.yy",},
         {"name":"Par_ScriptCallSetup","path":"extensions/Par/Par.yy",},
