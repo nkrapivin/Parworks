@@ -17,9 +17,10 @@ enum EParCallbackFunction {
 
 /// @desc Allows you to attach to Par callback functions.
 /// @param {EParCallbackFunction} eCallbackType Callback function to attach to
-/// @param {Any} callFunction Any callable object, be it a script index or a method
+/// @param {Any} [callFunction] Any callable object, be it a script index or a method
 /// @param {Any} [userData] Additional second argument to be provided to the function
-function Par_AttachTo(eCallbackType, callFunction, userData = undefined) {
+/// @returns callback object
+function Par_AttachTo(eCallbackType, callFunction = undefined, userData = undefined) {
 	if (is_undefined(eCallbackType)) {
 		throw "Par_AttachTo: Invalid argument eCallbackType, cannot be undefined.";
 	}
@@ -29,12 +30,10 @@ function Par_AttachTo(eCallbackType, callFunction, userData = undefined) {
 		throw "Par_AttachTo: Invalid argument eCallbackType, enum EParCallbackFunction out of range.";
 	}
 	
-	if (is_undefined(callFunction)) {
-		throw "Par_AttachTo: Invalid argument callFunction, cannot be undefined.";
-	}
-	
 	var _cbs = array_length(global._Par_Callbacks[@ eCallbackType]);
-	global._Par_Callbacks[@ eCallbackType][@ _cbs] = new _Par_CallbackObject(callFunction, userData);
+	var _cbstruct = new _Par_CallbackObject(callFunction, userData);
+	global._Par_Callbacks[@ eCallbackType][@ _cbs] = _cbstruct;
+	return _cbstruct;
 }
 
 /// @param pParam SteamInputConfigurationLoaded_t* see Steamworks SDK documentation
@@ -141,11 +140,45 @@ function ParInput_EnableActionEventCallbacks(pCallback) {
 
 
 function _Par_CallbackObject(argcallFunction, arguserData) constructor {
+// private:
+
 	m_callFunction = argcallFunction;
 	m_userData = arguserData;
 	
-	PerformCallback = function(pParam) {
-		return m_callFunction(pParam, m_userData);
+	_PerformCallback = function(pParam) {
+		if (!is_undefined(m_callFunction)) {
+			return m_callFunction(pParam, m_userData);
+		}
+		
+		return undefined;
+	};
+	
+// public:
+
+	GetCallFunction = function() {
+		return m_callFunction;
+	};
+	
+	IsCallFunctionPresent = function() {
+		return !is_undefined(m_callFunction);
+	};
+	
+	SetCallFunction = function(newCallFunction) {
+		m_callFunction = newCallFunction;
+		return self;
+	};
+	
+	GetUserData = function() {
+		return m_userData;
+	};
+	
+	IsUserDataPresent = function() {
+		return !is_undefined(m_userData);
+	};
+	
+	SetUserData = function(newUserData = undefined) {
+		m_userData = newUserData;
+		return self;
 	};
 }
 
@@ -163,7 +196,7 @@ function _Par_PerformCallbacks(eCallbackType, pParam) {
 		var _thiscb = _cbsarr[@ _i];
 		
 		if (!is_undefined(_thiscb)) {
-			_thiscb.PerformCallback(pParam);
+			_thiscb._PerformCallback(pParam);
 		}
 	}
 	

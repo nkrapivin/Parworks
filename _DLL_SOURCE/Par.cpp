@@ -278,29 +278,34 @@ void CParGMCalls::OnSteamShutdown(SteamShutdown_t* pParam) {
 
 parex
 void YYExtensionInitialise(const struct YYRunnerInterface* _pFunctions, size_t _functions_size) {
-	printf("[Par]: Welcome! This is Parworks by @nkrapivindev. Built at: " __DATE__ " " __TIME__ "\n");
-	fflush(stdout);
+	partrace("Welcome! This is Parworks by @nkrapivindev. Built at: " __DATE__ " " __TIME__);
 
 	if (!_pFunctions || _functions_size == 0) {
-		printf("[Par]: YYRunnerInterface* or size are null. Will crash.\n");
-		fflush(stdout);
+		partrace("YYRunnerInterface* or size are null. Will crash.");
 		return;
 	}
 
 	if (_functions_size < sizeof(*_pFunctions)) {
-		printf(
-			"[Par]: YYRunnerInterface size is older than this dll expects, wanted %zu got %zu. Will crash.\n",
+		partrace(
+			"YYRunnerInterface size is older than this dll expects, wanted %zu got %zu. Will crash.",
 			sizeof(*_pFunctions),
 			_functions_size
 		);
-		fflush(stdout);
 		return;
 	}
 
 	// yay
 	_YY = *_pFunctions;
-	printf("[Par]: YYRunnerInterface size %zu is initialised.\n", _functions_size);
-	fflush(stdout);
+	partrace("YYRunnerInterface size %zu is initialised.", _functions_size);
+
+	// poke ISteamUtils and see if it's there
+	if (!SteamUtils()) {
+		partrace("Steam doesn't seem to be initialised. The game will crash.");
+	}
+}
+
+funcdef(Par_DummyFunction) {
+	// does nothing...
 }
 
 funcdef(Par_ScriptCallSetup) {
@@ -313,6 +318,5 @@ funcdef(Par_ScriptCallSetup) {
 	// activate the callback listener thingy
 	ParGMCalls()->SetIsReady(true);
 
-	printf("[Par]: ScriptCallSetup is ready, script_execute=0x%p,globalptr=0x%p\n", F_ScriptExecute, g_pGlobal);
-	fflush(stdout);
+	partrace("ScriptCallSetup is ready, script_executeptr=0x%p,cbselfptr=0x%p", F_ScriptExecute, g_pGlobal);
 }

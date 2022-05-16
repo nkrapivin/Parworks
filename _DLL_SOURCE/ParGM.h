@@ -92,11 +92,6 @@ struct RValue {
 
 	inline RValue(const RValue& other);
 	inline RValue& operator=(const RValue& other);
-
-	using RValueIterator = RValue*; // yes I know this is bad.
-
-	inline RValueIterator begin();
-	inline RValueIterator end();
 };
 #pragma pack(pop)
 
@@ -309,6 +304,9 @@ struct YYRunnerInterface
 	void (*StructAddString)(RValue* _pStruct, const char* _pKey, const char* _pValue);
 };
 
+extern TYYBuiltin F_ScriptExecute;
+extern YYObjectBase* g_pGlobal;
+
 extern const YYRunnerInterface* ParGM();
 
 #define funcdef(_FunctionName) parex void _FunctionName (RValue& Result, CInstance* pSelf, CInstance* pOther, int argument_count, RValue* argument)
@@ -316,9 +314,8 @@ extern const YYRunnerInterface* ParGM();
 #define ensureargc(_ExpectedArgC) if (argument_count < _ExpectedArgC    ) { ParGM()->YYError(__FUNCTION__ " expected %d arguments got %d.", _ExpectedArgC, argument_count); }
 #define ensurekind(_Index, _Type) if (argument[_Index].typeOf() != _Type) { ParGM()->YYError(__FUNCTION__ " invalid argument[%d] type expected %s got %s.", _Index, eRVKindToString(_Type), argument[_Index].nameOf()); }
 
-inline RValue::RValue(const RValue& other) {
+inline RValue::RValue(const RValue& other) : v64{ 0 }, flags{ 0 }, kind{ eRVK_UNDEFINED } {
 	if (this != &other) {
-		ParGM()->FREE_RValue(this);
 		ParGM()->COPY_RValue(this, &other);
 	}
 }
@@ -329,22 +326,6 @@ inline RValue& RValue::operator=(const RValue& other) {
 	}
 
 	return *this;
-}
-
-inline RValue::RValueIterator RValue::begin() {
-	if (typeOf() != eRVK_ARRAY) {
-		ParGM()->YYError("Par extension attempted to iterate over a non-array (%s) var.", nameOf());
-		// ^^ that line throws an exception
-	}
-
-	return arr->length > 0 ? &arr->pArray[0] : nullptr;
-}
-
-inline RValue::RValueIterator RValue::end() {
-	// no need to do the array check here, since begin() must always be called before end().
-
-	// past the end...
-	return arr->length > 0 ? &arr->pArray[arr->length] : nullptr;
 }
 
 #endif

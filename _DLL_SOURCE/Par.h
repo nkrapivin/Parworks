@@ -1,10 +1,19 @@
 ﻿#pragma once
 
 #ifdef _WIN32
+
 #define _CRT_SECURE_NO_WARNINGS 1
+
+#ifdef PAR_EXPORTS
 #define parex __declspec(dllexport)
 #else
+#define parex __declspec(dllimport)
+#endif
+
+#else
+
 #define parex __attribute__((visibility("default")))
+
 #endif
 
 #include <cstddef>
@@ -17,7 +26,11 @@
 #define cparcast const_cast
 #define rparcast reinterpret_cast
 
-#include "ParGM.h"
+#define __Parstringify(__THING) #__THING
+#define _Parstringify(_THING) __Parstringify(_THING)
+#define partrace(...) do { printf("[Par|" __FUNCTION__ ";" _Parstringify(__LINE__) "]: "); printf(__VA_ARGS__); printf("\n"); fflush(stdout); } while (false)
+//#undef _Parstringify
+//#undef __Parstringify
 
 // stores various ids and keys to call into GML
 class CParGMCalls {
@@ -52,5 +65,3 @@ private:
 
 extern CParGMCalls* ParGMCalls();
 
-extern TYYBuiltin F_ScriptExecute;
-extern YYObjectBase* g_pGlobal;

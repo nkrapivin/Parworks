@@ -1,6 +1,7 @@
 #include "Par.h"
 #include "ParGM.h"
 #include <array>
+#include <string>
 
 funcdef(ParInput_Init) {
 	ensureargc(1);
@@ -82,7 +83,6 @@ funcdef(ParInput_EnableDeviceCallbacks) {
 }
 
 static int _EnableActionEventCallbacksFuncScriptIndex{ -1 };
-static RValue Undefined{ };
 static void _EnableActionEventCallbacksFunc(SteamInputActionEvent_t *pParam) {
 	if (_EnableActionEventCallbacksFuncScriptIndex < 0) {
 		return;
@@ -113,10 +113,8 @@ static void _EnableActionEventCallbacksFunc(SteamInputActionEvent_t *pParam) {
 			ParGM()->StructCreate(&_digitalActionData);
 			ParGM()->StructAddBool(&_digitalActionData, "bState", pParam->digitalAction.digitalActionData.bState);
 			ParGM()->StructAddBool(&_digitalActionData, "bActive", pParam->digitalAction.digitalActionData.bActive);
-			ParGM()->StructAddRValue(&_digitalAction, "digitalActionData", &_digitalActionData);
 
-			ParGM()->StructAddRValue(&args[1], "digitalAction", &_digitalAction);
-			ParGM()->StructAddRValue(&args[1], "analogAction", &Undefined);
+			ParGM()->StructAddRValue(&_digitalAction, "digitalActionData", &_digitalActionData);
 			break;
 		}
 
@@ -131,13 +129,14 @@ static void _EnableActionEventCallbacksFunc(SteamInputActionEvent_t *pParam) {
 			ParGM()->StructAddDouble(&_analogActionData, "x", pParam->analogAction.analogActionData.x);
 			ParGM()->StructAddDouble(&_analogActionData, "y", pParam->analogAction.analogActionData.y);
 			ParGM()->StructAddBool(&_analogActionData, "bActive", pParam->analogAction.analogActionData.bActive);
-			ParGM()->StructAddRValue(&_analogAction, "analogActionData", &_analogActionData);
 
-			ParGM()->StructAddRValue(&args[1], "analogAction", &_analogAction);
-			ParGM()->StructAddRValue(&args[1], "digitalAction", &Undefined);
+			ParGM()->StructAddRValue(&_analogAction, "analogActionData", &_analogActionData);
 			break;
 		}
 	}
+
+	ParGM()->StructAddRValue(&args[1], "digitalAction", &_digitalAction);
+	ParGM()->StructAddRValue(&args[1], "analogAction", &_analogAction);
 
 	F_ScriptExecute(
 		Result,
@@ -381,6 +380,26 @@ funcdef(ParInput_GetAnalogActionOrigins) {
 	Result = RValue{ l };
 }
 
+static void _AddFilesDirToWhitelist(const char* str) {
+	if (!str) {
+		return;
+	}
+
+	std::string thepath{ str };
+	std::size_t lastsepind{ thepath.npos };
+	// try both normal slash and backslash
+	lastsepind = thepath.find_last_of('/');
+	if (lastsepind == thepath.npos) {
+		lastsepind = thepath.find_last_of('\\');
+	}
+
+	if (lastsepind != thepath.npos) {
+		thepath = thepath.substr(0, lastsepind);
+		partrace("Adding directory '%s' to the whitelist", thepath.c_str());
+		ParGM()->AddDirectoryToBundleWhitelist(thepath.c_str());
+	}
+}
+
 funcdef(ParInput_GetGlyphPNGForActionOrigin) {
 	ensureargc(3);
 
@@ -392,16 +411,11 @@ funcdef(ParInput_GetGlyphPNGForActionOrigin) {
 		)
 	};
 
-	// `str` is not a null pointer
-	if (str) {
-		// thx yoyogames
-		ParGM()->AddFileToBundleWhitelist(str);
-		// return the exact same string
-		ParGM()->YYCreateString(
-			&Result,
-			str
-		);
-	}
+	_AddFilesDirToWhitelist(str);
+	ParGM()->YYCreateString(
+		&Result,
+		str
+	);
 }
 
 funcdef(ParInput_GetGlyphSVGForActionOrigin) {
@@ -414,16 +428,11 @@ funcdef(ParInput_GetGlyphSVGForActionOrigin) {
 		)
 	};
 
-	// `str` is not a null pointer
-	if (str) {
-		// thx yoyogames
-		ParGM()->AddFileToBundleWhitelist(str);
-		// return the exact same string
-		ParGM()->YYCreateString(
-			&Result,
-			str
-		);
-	}
+	_AddFilesDirToWhitelist(str);
+	ParGM()->YYCreateString(
+		&Result,
+		str
+	);
 }
 
 funcdef(ParInput_GetGlyphForActionOrigin_Legacy) {
@@ -435,16 +444,11 @@ funcdef(ParInput_GetGlyphForActionOrigin_Legacy) {
 		)
 	};
 
-	// `str` is not a null pointer
-	if (str) {
-		// thx yoyogames
-		ParGM()->AddFileToBundleWhitelist(str);
-		// return the exact same string
-		ParGM()->YYCreateString(
-			&Result,
-			str
-		);
-	}
+	_AddFilesDirToWhitelist(str);
+	ParGM()->YYCreateString(
+		&Result,
+		str
+	);
 }
 
 funcdef(ParInput_GetStringForActionOrigin) {
@@ -697,16 +701,16 @@ funcdef(ParInput_GetRemotePlaySessionID) {
 	ensurekind(0, eRVK_INT64);
 
 	Result = RValue{
-		parcast<long long>(
-			SteamInput()->GetRemotePlaySessionID(
-				ParGM()->YYGetInt64(argument, 0)
-			)
+		SteamInput()->GetRemotePlaySessionID(
+			ParGM()->YYGetInt64(argument, 0)
 		)
 	};
 }
 
 funcdef(ParInput_GetSessionInputConfigurationSettings) {
 	Result = RValue{
-		SteamInput()->GetSessionInputConfigurationSettings()
+		parcast<int>(
+			SteamInput()->GetSessionInputConfigurationSettings()
+		)
 	};
 }

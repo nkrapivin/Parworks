@@ -16,7 +16,7 @@
   "androidProps": false,
   "installdir": "",
   "files": [
-    {"filename":"Par.dll","origname":"","init":"","final":"","kind":1,"uncompress":false,"functions":[
+    {"filename":"Par.dll","origname":"","init":"Par_DummyFunction","final":"Par_DummyFunction","kind":1,"uncompress":false,"functions":[
         {"externalName":"YYExtensionInitialise","kind":1,"help":"Par_YYExtensionInitialise(DONT,CALL)","hidden":false,"returnType":2,"argCount":0,"args":[
             1,
             2,
@@ -253,6 +253,7 @@
             2,
             2,
           ],"resourceVersion":"1.0","name":"ParUtils_ShowGamepadTextInput","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"Par_DummyFunction","kind":1,"help":"Par_DummyFunction()","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"Par_DummyFunction","tags":[],"resourceType":"GMExtensionFunction",},
       ],"constants":[],"ProxyFiles":[
         {"TargetMask":6,"resourceVersion":"1.0","name":"Par_x64.dll","tags":[],"resourceType":"GMProxyFile",},
       ],"copyToTargets":194,"order":[
@@ -325,6 +326,7 @@
         {"name":"ParUtils_GetEnteredGamepadTextInput","path":"extensions/Par/Par.yy",},
         {"name":"ParUtils_GetEnteredGamepadTextLength","path":"extensions/Par/Par.yy",},
         {"name":"ParUtils_ShowGamepadTextInput","path":"extensions/Par/Par.yy",},
+        {"name":"Par_DummyFunction","path":"extensions/Par/Par.yy",},
       ],"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMExtensionFile",},
   ],
   "classname": "",
