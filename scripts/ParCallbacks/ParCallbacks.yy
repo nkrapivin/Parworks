@@ -2,8 +2,8 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Extensions",
-    "path": "folders/Extensions.yy",
+    "name": "Parworks itself",
+    "path": "folders/Parworks itself.yy",
   },
   "resourceVersion": "1.0",
   "name": "ParCallbacks",

@@ -9,6 +9,40 @@ steam_set_warning_message_hook();
 
 zero = int64(0);
 
+Par_AttachTo(
+	EParCallbackFunction.k_OnSteamInputConfigurationLoaded,
+	function(pParam, userData = undefined) {
+		with (Obj_Steam_GeneralInfo) {
+			txt += string(userData) + " - " + string(pParam.m_ulDeviceHandle) + "\n";
+		}
+	},
+	"i love wearing cat ears"
+);
+
+Par_AttachTo(
+	EParCallbackFunction.k_OnFloatingGamepadTextInputDismissed,
+	function(pParam, userData = undefined) {
+		with (Obj_Steam_GeneralInfo) {
+			txt += "Floating Keyboard Dismissed! get_timer()=" + string(get_timer()) + "\n";
+		}
+	}
+	//, [] // optional userdata, will be the `userData` argument if provided
+	// allows for stuff like lambdas and variable captures.
+);
+
+Par_AttachTo(
+	EParCallbackFunction.k_OnGamepadTextInputDismissed,
+	function(pParam, userData = undefined) {
+		var _textRef = {}; // must be an empty struct
+		var _len = ParUtils_GetEnteredGamepadTextLength();
+		ParUtils_GetEnteredGamepadTextInput(_textRef, _len);
+		var _text = _textRef.refval;
+	
+		with (Obj_Steam_GeneralInfo) {
+			txt += "Tenfoot Keyboard Dismissed! t=" + string(get_timer()) + ",s='" + _text + "'." + "\n";
+		}
+	}
+);
 
 
 // initialize Steam Input:
@@ -64,17 +98,6 @@ onActionEventCallback = function(pParam) {
 		}
 	}
 };
-
-// must be a global function script, not a method! so we have the index not a method struct.
-function __Obj_Steam_controller_onActionEventCallback(pParam) {
-	// this function is called in a different `self`, need to do a with() into the real callback.
-	with (Obj_Steam_controller) {
-		onActionEventCallback(pParam);
-	}
-}
-
-//  !!!!!!!!!!!! this is what you pass into the ParInput_EnableActionEventCallbacks function !!!!!!!!!
-onActionEventIndex = __Obj_Steam_controller_onActionEventCallback;
 
 
 room_goto(Room_Steam_Main);

@@ -44,9 +44,9 @@
             1,
           ],"resourceVersion":"1.0","name":"ParInput_GetConnectedControllers","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"ParInput_EnableDeviceCallbacks","kind":1,"help":"ParInput_EnableDeviceCallbacks()","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"ParInput_EnableDeviceCallbacks","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"ParInput_EnableActionEventCallbacks","kind":1,"help":"ParInput_EnableActionEventCallbacks(pCallback_MUST_BE_SCRIPT_INDEX_NOT_METHOD)","hidden":false,"returnType":2,"argCount":0,"args":[
+        {"externalName":"ParInput_EnableActionEventCallbacks","kind":1,"help":"_ParInput_EnableActionEventCallbacks(pCallback_SCRIPT_INDEX_ONLY_NOT_METHOD)","hidden":false,"returnType":2,"argCount":0,"args":[
             2,
-          ],"resourceVersion":"1.0","name":"ParInput_EnableActionEventCallbacks","tags":[],"resourceType":"GMExtensionFunction",},
+          ],"resourceVersion":"1.0","name":"_ParInput_EnableActionEventCallbacks","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"ParInput_GetActionSetHandle","kind":1,"help":"ParInput_GetActionSetHandle(pszActionSetName)","hidden":false,"returnType":2,"argCount":0,"args":[
             1,
           ],"resourceVersion":"1.0","name":"ParInput_GetActionSetHandle","tags":[],"resourceType":"GMExtensionFunction",},
@@ -266,7 +266,7 @@
         {"name":"ParInput_BNewDataAvailable","path":"extensions/Par/Par.yy",},
         {"name":"ParInput_GetConnectedControllers","path":"extensions/Par/Par.yy",},
         {"name":"ParInput_EnableDeviceCallbacks","path":"extensions/Par/Par.yy",},
-        {"name":"ParInput_EnableActionEventCallbacks","path":"extensions/Par/Par.yy",},
+        {"name":"_ParInput_EnableActionEventCallbacks","path":"extensions/Par/Par.yy",},
         {"name":"ParInput_GetActionSetHandle","path":"extensions/Par/Par.yy",},
         {"name":"ParInput_ActivateActionSet","path":"extensions/Par/Par.yy",},
         {"name":"ParInput_GetCurrentActionSet","path":"extensions/Par/Par.yy",},
@@ -361,8 +361,8 @@
   "iosCocoaPodDependencies": "",
   "tvosCocoaPodDependencies": "",
   "parent": {
-    "name": "Extensions",
-    "path": "folders/Extensions.yy",
+    "name": "Parworks itself",
+    "path": "folders/Parworks itself.yy",
   },
   "resourceVersion": "1.2",
   "name": "Par",

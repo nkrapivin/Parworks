@@ -96,7 +96,7 @@
   ],
   "Folders": [
     {"folderPath":"folders/Scripts.yy","order":5,"resourceVersion":"1.0","name":"Scripts","tags":[],"resourceType":"GMFolder",},
-    {"folderPath":"folders/Extensions.yy","order":14,"resourceVersion":"1.0","name":"Extensions","tags":[],"resourceType":"GMFolder",},
+    {"folderPath":"folders/Parworks itself.yy","order":14,"resourceVersion":"1.0","name":"Parworks itself","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Steamworks.yy","order":15,"resourceVersion":"1.0","name":"Steamworks","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Steamworks Demo.yy","order":16,"resourceVersion":"1.0","name":"Steamworks Demo","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Steamworks Demo/Main.yy","order":1,"resourceVersion":"1.0","name":"Main","tags":[],"resourceType":"GMFolder",},
@@ -120,7 +120,6 @@
   ],
   "IncludedFiles": [
     {"CopyToMask":0,"filePath":"datafiles","resourceVersion":"1.0","name":"Steamworks_Extension_Documentation.pdf","resourceType":"GMIncludedFile",},
-    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"Steamworks_Extension_Documentation.pdf","resourceType":"GMIncludedFile",},
   ],
   "MetaData": {
     "IDEVersion": "2022.3.0.625",
