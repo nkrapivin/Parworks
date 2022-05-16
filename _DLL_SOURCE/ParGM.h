@@ -5,10 +5,16 @@
 // This file is an original work developed by Opera.
 //
 
-#ifndef __YY__RUNNER_INTERFACE_H_
-#define __YY__RUNNER_INTERFACE_H_
-
 #include <cstdint>
+
+enum eBuffer_Format {
+	eBuffer_Format_Fixed = 0,
+	eBuffer_Format_Grow = 1,
+	eBuffer_Format_Wrap = 2,
+	eBuffer_Format_Fast = 3,
+	eBuffer_Format_VBuffer = 4,
+	eBuffer_Format_Network = 5,
+};
 
 enum eRVKind : unsigned {
 	eRVK_REAL = 0,		// Real value
@@ -58,95 +64,11 @@ class CInstance;
 class CScriptRef;
 class RefDynamicArrayOfRValue;
 
-#pragma pack(push, 4)
-struct RValue {
-	union {
-		int v32;
-		long long v64;
-		unsigned long long vu64;
-		double val;
-		void* ptr;
-		uintptr_t ptr_as_num;
-		RefDynamicArrayOfRValue* arr;
-		YYObjectBase* obj;
-		CScriptRef* scref;
-	};
-
-	unsigned flags;
-	unsigned kind;
-
-	RValue() : v64{ 0 }, flags{ 0 }, kind{ eRVK_UNDEFINED } {};
-	explicit RValue(bool v) : val{ v ? 1.0 : 0.0 }, flags{ 0 }, kind{ eRVK_BOOL } {};
-	explicit RValue(int v) : val{ parcast<double>(v) }, flags{ 0 }, kind{ eRVK_REAL } {};
-	explicit RValue(unsigned int v) : val{ parcast<double>(v) }, flags{ 0 }, kind{ eRVK_REAL } {};
-	explicit RValue(float v) : val{ v }, flags{ 0 }, kind{ eRVK_REAL } {};
-	explicit RValue(double v) : val{ v }, flags{ 0 }, kind{ eRVK_REAL } {};
-	explicit RValue(long long v) : v64{ v }, flags{ 0 }, kind{ eRVK_INT64 } {};
-	explicit RValue(unsigned long long v) : vu64{ v }, flags{ 0 }, kind{ eRVK_INT64 } {
-		// yes I know this is kinda wrong, but I want to be sure here...
-	};
-	//explicit RValue(void* v) : ptr{ v }, flags{ 0 }, kind{ eRVK_PTR } {};
-
-	inline unsigned typeOf() const { return kind & eRVK_UNSET; }
-	inline const char* nameOf() const { return eRVKindToString(parcast<eRVKind>(typeOf())); }
-
-	inline RValue(const RValue& other);
-	inline RValue& operator=(const RValue& other);
-};
-#pragma pack(pop)
-
-class CWeakRef;
-
-class CInstanceBase {
-public:
-	RValue* yyvars; // legacy always nullptr
-	virtual ~CInstanceBase() = 0;
-	virtual RValue& InternalGetYYVarRef(int index) = 0;
-	virtual RValue& InternalGetYYVarRefL(int index) = 0;
-};
-
-class YYObjectBase : public CInstanceBase {
-public:
-	YYObjectBase* m_pNextObject;
-	YYObjectBase* m_pPrevObject;
-	YYObjectBase* m_prototype;
-	const char* m_class;
-	void* m_getOwnProperty;
-	void* m_deleteProperty;
-	void* m_defineOwnProperty;
-	void* m_yyvarsMap;
-	CWeakRef** m_pWeakRefs;
-	unsigned m_numWeakRefs;
-	unsigned m_nvars;
-	unsigned m_flags;
-	unsigned m_capacity;
-	unsigned m_visited;
-	unsigned m_visitedGC;
-	int m_GCgen;
-	int m_GCcreationframe;
-	int m_slot;
-	int m_kind;
-	int m_rvalueInitType;
-	int m_curSlot;
-};
-
-class CWeakRef : public YYObjectBase {
-public:
-	YYObjectBase* pWeakRef;
-};
-
-class RefDynamicArrayOfRValue : public YYObjectBase {
-public:
-	int refcount;
-	int flags;
-	RValue* pArray;
-	long long owner;
-	int visited;
-	int length;
-};
-
 struct YYRunnerInterface;
+extern const YYRunnerInterface* ParGM();
+
 struct HTTP_REQ_CONTEXT;
+struct RValue;
 typedef int (*PFUNC_async)(HTTP_REQ_CONTEXT* _pContext, void* _pPayload, int* _pMap);
 typedef void (*PFUNC_cleanup)(HTTP_REQ_CONTEXT* _pContext);
 typedef void (*PFUNC_process)(HTTP_REQ_CONTEXT* _pContext);
@@ -158,28 +80,7 @@ typedef RValue& (*TYYCCall)(CInstance* selfinst, CInstance* otherinst, RValue& R
 typedef void* HYYMUTEX;
 typedef void* HSPRITEASYNC;
 
-class CScriptRef : public YYObjectBase {
-public:
-	void* m_callScript;
-	TYYBuiltin m_callCpp;
-	TYYCCall m_callYYC;
-	RValue m_scope;
-	RValue m_boundThis;
-	YYObjectBase* m_pStatic;
-	void* m_hasInstance;
-	void* m_construct;
-	const char* m_tag;
-};
-
-class CInstance : public YYObjectBase {
-public:
-	// hell no.
-};
-
-
-
-struct YYRunnerInterface
-{
+struct YYRunnerInterface {
 	// basic interaction with the user
 	void (*DebugConsoleOutput)(const char* fmt, ...); // hook to YYprintf
 	void (*ReleaseConsoleOutput)(const char* fmt, ...);
@@ -264,7 +165,7 @@ struct YYRunnerInterface
 	// buffer access
 	bool (*BufferGetContent)(int _index, void** _ppData, int* _pDataSize);
 	int (*BufferWriteContent)(int _index, int _dest_offset, const void* _pSrcMem, int _size, bool _grow, bool _wrap);
-	int (*CreateBuffer)(int _size, enum eBuffer_Format _bf, int _alignment);
+	int (*CreateBuffer)(int _size, eBuffer_Format _bf, int _alignment);
 
 	// variables
 	volatile bool* pLiveConnection;
@@ -304,28 +205,127 @@ struct YYRunnerInterface
 	void (*StructAddString)(RValue* _pStruct, const char* _pKey, const char* _pValue);
 };
 
+#pragma pack(push, 4)
+struct RValue {
+	union {
+		int v32;
+		long long v64;
+		unsigned long long vu64;
+		double val;
+		void* ptr;
+		uintptr_t ptr_as_num;
+		RefDynamicArrayOfRValue* arr;
+		YYObjectBase* obj;
+		CScriptRef* scref;
+	};
+
+	unsigned flags;
+	unsigned kind;
+
+	RValue() : v64{ 0 }, flags{ 0 }, kind{ eRVK_UNDEFINED } {};
+	explicit RValue(bool v) : val{ v ? 1.0 : 0.0 }, flags{ 0 }, kind{ eRVK_BOOL } {};
+	explicit RValue(int v) : val{ parcast<double>(v) }, flags{ 0 }, kind{ eRVK_REAL } {};
+	explicit RValue(unsigned int v) : val{ parcast<double>(v) }, flags{ 0 }, kind{ eRVK_REAL } {};
+	explicit RValue(float v) : val{ v }, flags{ 0 }, kind{ eRVK_REAL } {};
+	explicit RValue(double v) : val{ v }, flags{ 0 }, kind{ eRVK_REAL } {};
+	explicit RValue(long long v) : v64{ v }, flags{ 0 }, kind{ eRVK_INT64 } {};
+	explicit RValue(unsigned long long v) : vu64{ v }, flags{ 0 }, kind{ eRVK_INT64 } {
+		// yes I know this is kinda wrong, but I want to be sure here...
+	};
+	//explicit RValue(void* v) : ptr{ v }, flags{ 0 }, kind{ eRVK_PTR } {};
+
+	inline unsigned typeOf() const { return kind & eRVK_UNSET; }
+	inline const char* nameOf() const { return eRVKindToString(parcast<eRVKind>(typeOf())); }
+
+	inline RValue(const RValue& other) : v64{ 0 }, flags{ 0 }, kind{ eRVK_UNDEFINED } {
+		if (this != &other) {
+			ParGM()->COPY_RValue(this, &other);
+		}
+	}
+
+	inline RValue& operator=(const RValue& other) {
+		if (this != &other) {
+			ParGM()->COPY_RValue(this, &other);
+		}
+
+		return *this;
+	}
+};
+#pragma pack(pop)
+
+class CWeakRef;
+
+class CInstanceBase {
+public:
+	RValue* yyvars; // legacy always nullptr
+	virtual ~CInstanceBase() = 0;
+	virtual RValue& InternalGetYYVarRef(int index) = 0;
+	virtual RValue& InternalGetYYVarRefL(int index) = 0;
+};
+
+class YYObjectBase : public CInstanceBase {
+public:
+	YYObjectBase* m_pNextObject;
+	YYObjectBase* m_pPrevObject;
+	YYObjectBase* m_prototype;
+	const char* m_class;
+	void* m_getOwnProperty;
+	void* m_deleteProperty;
+	void* m_defineOwnProperty;
+	void* m_yyvarsMap;
+	CWeakRef** m_pWeakRefs;
+	unsigned m_numWeakRefs;
+	unsigned m_nvars;
+	unsigned m_flags;
+	unsigned m_capacity;
+	unsigned m_visited;
+	unsigned m_visitedGC;
+	int m_GCgen;
+	int m_GCcreationframe;
+	int m_slot;
+	int m_kind;
+	int m_rvalueInitType;
+	int m_curSlot;
+};
+
+class CWeakRef : public YYObjectBase {
+public:
+	YYObjectBase* pWeakRef;
+};
+
+class RefDynamicArrayOfRValue : public YYObjectBase {
+public:
+	int refcount;
+	int flags;
+	RValue* pArray;
+	long long owner;
+	int visited;
+	int length;
+};
+
+class CScriptRef : public YYObjectBase {
+public:
+	void* m_callScript;
+	TYYBuiltin m_callCpp;
+	TYYCCall m_callYYC;
+	RValue m_scope;
+	RValue m_boundThis;
+	YYObjectBase* m_pStatic;
+	void* m_hasInstance;
+	void* m_construct;
+	const char* m_tag;
+};
+
+class CInstance : public YYObjectBase {
+public:
+	// hell no.
+};
+
 extern TYYBuiltin F_ScriptExecute;
 extern YYObjectBase* g_pGlobal;
 
-extern const YYRunnerInterface* ParGM();
-
 #define funcdef(_FunctionName) parex void _FunctionName (RValue& Result, CInstance* pSelf, CInstance* pOther, int argument_count, RValue* argument)
 
-#define ensureargc(_ExpectedArgC) if (argument_count < _ExpectedArgC    ) { ParGM()->YYError(__FUNCTION__ " expected %d arguments got %d.", _ExpectedArgC, argument_count); }
-#define ensurekind(_Index, _Type) if (argument[_Index].typeOf() != _Type) { ParGM()->YYError(__FUNCTION__ " invalid argument[%d] type expected %s got %s.", _Index, eRVKindToString(_Type), argument[_Index].nameOf()); }
+#define ensureargc(_ExpectedArgC) if (argument_count < _ExpectedArgC    ) { ParGM()->YYError("%s expected %d arguments got %d.", __FUNCTION__, _ExpectedArgC, argument_count); }
+#define ensurekind(_Index, _Type) if (argument[_Index].typeOf() != _Type) { ParGM()->YYError("%s invalid argument[%d] type expected %s got %s.", __FUNCTION__, _Index, eRVKindToString(_Type), argument[_Index].nameOf()); }
 
-inline RValue::RValue(const RValue& other) : v64{ 0 }, flags{ 0 }, kind{ eRVK_UNDEFINED } {
-	if (this != &other) {
-		ParGM()->COPY_RValue(this, &other);
-	}
-}
-
-inline RValue& RValue::operator=(const RValue& other) {
-	if (this != &other) {
-		ParGM()->COPY_RValue(this, &other);
-	}
-
-	return *this;
-}
-
-#endif

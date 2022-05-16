@@ -26,11 +26,7 @@
 #define cparcast const_cast
 #define rparcast reinterpret_cast
 
-#define __Parstringify(__THING) #__THING
-#define _Parstringify(_THING) __Parstringify(_THING)
-#define partrace(...) do { printf("[Par|" __FUNCTION__ ";" _Parstringify(__LINE__) "]: "); printf(__VA_ARGS__); printf("\n"); fflush(stdout); } while (false)
-//#undef _Parstringify
-//#undef __Parstringify
+#define partrace(...) do { printf("[Par|%s;%d]: ", __FUNCTION__, __LINE__); printf(__VA_ARGS__); printf("\n"); fflush(stdout); } while (false)
 
 // stores various ids and keys to call into GML
 class CParGMCalls {
