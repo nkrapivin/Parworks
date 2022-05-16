@@ -257,6 +257,7 @@
       ],"constants":[],"ProxyFiles":[
         {"TargetMask":6,"resourceVersion":"1.0","name":"Par_x64.dll","tags":[],"resourceType":"GMProxyFile",},
         {"TargetMask":7,"resourceVersion":"1.0","name":"libPar_linux.so","tags":[],"resourceType":"GMProxyFile",},
+        {"TargetMask":1,"resourceVersion":"1.0","name":"libPar.dylib","tags":[],"resourceType":"GMProxyFile",},
       ],"copyToTargets":194,"order":[
         {"name":"Par_YYExtensionInitialise","path":"extensions/Par/Par.yy",},
         {"name":"Par_ScriptCallSetup","path":"extensions/Par/Par.yy",},

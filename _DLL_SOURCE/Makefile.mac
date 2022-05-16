@@ -1,0 +1,25 @@
+.PHONY : clean
+
+CC		=	clang++
+CXX		=	clang++
+STEAMWORKS	=	$(HOME)/steamworks_sdk
+CPPFLAGS	=	-std=c++17 -fPIC -g -I$(STEAMWORKS)/public/steam
+LDFLAGS		=	-shared -L$(STEAMWORKS)/redistributable_bin/osx -L$(STEAMWORKS)/public/steam/lib/osx -lsteam_api
+SOURCES		=	$(shell echo *.cpp)
+HEADERS		=	$(shell echo *.h)
+OBJECTS		=	$(SOURCES:.cpp=.o)
+TARGET		=	libPar.dylib
+
+
+all: $(TARGET)
+
+
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+
+
+$(TARGET) : $(OBJECTS)
+	$(CC) $(CPPFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
+
+
+
