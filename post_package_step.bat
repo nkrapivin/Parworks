@@ -16,8 +16,8 @@ powershell Expand-Archive '%YYprojectName%.zip' _temp\
 
 :: Write the patch file to the temp directory
 echo #!/bin/bash >> _temp\run.sh
-echo unset LD_LIBRARY_PATH >> _temp\run.sh
-echo ./%YYprojectName% >> _temp\run.sh
+echo # unset LD_LIBRARY_PATH # breaks on new runtimes >> _temp\run.sh
+echo ./%YYprojectName% "$@" >> _temp\run.sh
 
 :: Ensure the EOL format is converted to LF
 powershell -noninteractive -NoProfile -ExecutionPolicy Bypass -Command "& {[IO.File]::WriteAllText('_temp\run.sh', ([IO.File]::ReadAllText('_temp\run.sh') -replace \"`r`n\", \"`n\"))};"

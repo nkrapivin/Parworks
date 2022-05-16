@@ -7,7 +7,7 @@ set echo off
 # ########################################### EDIT VARIABLES ###########################################
 
 # Replace with your steamworks sdk path (download from here: https://partner.steamgames.com/doc/sdk)
-STEAM_SDK_PATH=$(dirname $(dirname "$0"))/steamworks_sdk
+STEAM_SDK_PATH=$HOME/steamworks_sdk
 
 # ######################################################################################################
 

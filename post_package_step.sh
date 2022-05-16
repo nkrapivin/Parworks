@@ -17,8 +17,8 @@ unzip "./${YYprojectName}.zip" -d ./_temp
 
 # Write the patch file to the temp directory
 echo "#!/bin/bash" >> _temp/run.sh
-echo "unset LD_LIBRARY_PATH" >> _temp/run.sh
-echo "./${YYprojectName}" >> _temp/run.sh
+echo "# unset LD_LIBRARY_PATH # breaks on new runtimes" >> _temp/run.sh
+echo "./${YYprojectName} \"\$@\"" >> _temp/run.sh
 
 # Add execute permissions
 chmod +x _temp/run.sh
