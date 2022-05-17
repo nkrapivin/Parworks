@@ -108,24 +108,37 @@ function Par_OnSteamShutdown(pParam) {
 
 
 
-global._Par_EnableActionEventCallbacksThing = undefined;
+global._Par_EnableActionEventCallbacksArray = []; // array of _Par_PerformCallbacks
 
 function _Par_ThingCalledByEnableActionEventCallbacks(pParam) {
-	if (!is_undefined(global._Par_EnableActionEventCallbacksThing)) {
-		global._Par_EnableActionEventCallbacksThing(pParam);
+	var _i;
+	
+	for (_i = 0; _i < array_length(global._Par_EnableActionEventCallbacksArray); ++_i) {
+		var _cb = global._Par_EnableActionEventCallbacksArray[@ _i];
+		
+		if (!is_undefined(_cb)) {
+			_cb._PerformCallback(pParam);
+		}
 	}
+	
+	return _i;
 }
 
 /// @desc An ugly hack around Script_Execute in the runner...
-function ParInput_EnableActionEventCallbacks(pCallback) {
+function ParInput_EnableActionEventCallbacks(pCallback, userData = undefined) {
 	if (is_undefined(pCallback)) {
 		// this will silence action event callbacks...
+		array_resize(global._Par_EnableActionEventCallbacksArray, 0);
 		_ParInput_EnableActionEventCallbacks(-1);
+		return undefined;
 	}
 	else {
-		global._Par_EnableActionEventCallbacksThing = pCallback;
+		var _cb = new _Par_CallbackObject(pCallback, userData);
+		var _cblen = array_length(global._Par_EnableActionEventCallbacksArray);
+		global._Par_EnableActionEventCallbacksArray[@ _cblen] = _cb;
 		// global scripts do work, methods do not, I want to allow methods
 		_ParInput_EnableActionEventCallbacks(_Par_ThingCalledByEnableActionEventCallbacks);
+		return _cb;
 	}
 }
 
@@ -143,6 +156,7 @@ function _Par_CallbackObject(argcallFunction, arguserData) constructor {
 // private:
 
 	m_callFunction = argcallFunction;
+	
 	m_userData = arguserData;
 	
 	_PerformCallback = function(pParam) {
@@ -189,11 +203,9 @@ for (var _i = EParCallbackFunction.k_First; _i != EParCallbackFunction.k_Max; ++
 
 function _Par_PerformCallbacks(eCallbackType, pParam) {
 	var _i;
-	var _cbsarr = global._Par_Callbacks[@ eCallbackType];
-	var _cbslen = array_length(_cbsarr);
 	
-	for (_i = 0; _i < _cbslen; ++_i) {
-		var _thiscb = _cbsarr[@ _i];
+	for (_i = 0; _i < array_length(global._Par_Callbacks[@ eCallbackType]); ++_i) {
+		var _thiscb = global._Par_Callbacks[@ eCallbackType][@ _i];
 		
 		if (!is_undefined(_thiscb)) {
 			_thiscb._PerformCallback(pParam);

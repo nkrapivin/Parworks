@@ -17,6 +17,9 @@ if (_num > 0) {
 	if (!justthisonce) {
 		justthisonce = true;
 		ParInput_EnableActionEventCallbacks(onActionEventCallback);
+		ParInput_EnableActionEventCallbacks(function(pParam, test) {
+			show_debug_message("and an another callback: " + test);
+		}, "hello userdata test");
 		
 		var _path = ParInput_GetGlyphPNGForActionOrigin(
 			EInputActionOrigin.k_PS4_Circle,

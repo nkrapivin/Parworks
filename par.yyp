@@ -120,6 +120,11 @@
   ],
   "IncludedFiles": [
     {"CopyToMask":0,"filePath":"datafiles","resourceVersion":"1.0","name":"Steamworks_Extension_Documentation.pdf","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"post_build_step.sh","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"post_build_step.bat","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"post_package_step.sh","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"COPY_ALL_BAT_SH_TO_PROJECT_ROOT.txt","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"post_package_step.bat","resourceType":"GMIncludedFile",},
   ],
   "MetaData": {
     "IDEVersion": "2022.3.0.625",
