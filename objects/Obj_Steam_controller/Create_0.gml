@@ -7,7 +7,14 @@ steam_set_warning_message_hook();
 
 #macro SteamLeaderboard "YYLeaderboard_10/29/21--"
 
-zero = int64(0);
+// a small test to see if Steam launch parameters are passed to the game...
+var _paramcnt = parameter_count();
+for (var _i = 1; _i < _paramcnt; ++_i) {
+	var _param = string(parameter_string(_i));
+	if (_param == "-dodebugoverlay") {
+		show_debug_overlay(true);
+	}
+}
 
 Par_AttachTo(
 	EParCallbackFunction.k_OnSteamInputConfigurationLoaded,
@@ -44,6 +51,37 @@ Par_AttachTo(
 	}
 );
 
+Par_AttachTo(
+	EParCallbackFunction.k_OnRemoteStorageLocalFileChange,
+	function(pParam, userData = undefined) {
+		var _count = ParRemoteStorage_GetLocalFileChangeCount();
+		show_debug_message("OnRemoteStorageLocalFileChange: count=" + string(_count));
+		
+		for (var _i = 0; _i < _count; ++_i) {
+			var _changeTypeRef = {}; // must be empty structs with no members, `refval` will be added.
+			var _filePathTypeRef = {};
+			
+			//string
+			var _filePath = ParRemoteStorage_GetLocalFileChange(_i, _changeTypeRef, _filePathTypeRef);
+			//ERemoteStorageLocalFileChange
+			var _changeType = _changeTypeRef.refval;
+			//ERemoteStorageFilePathType
+			var _filePathType = _filePathTypeRef.refval;
+			
+			show_debug_message(
+				"[" + string(_i) + "] - path='" + _filePath +
+				"'" + ",changeType=" + string(_changeType) +
+				",filePathType=" + string(_filePathType)
+			);
+			
+			// feel free to reload the files here:
+			//....
+		}
+		
+		show_debug_message("OnRemoteStorageLocalFileChange: end");
+	}
+);
+
 
 // initialize Steam Input:
 var _ok = ParInput_Init(false);
@@ -53,52 +91,9 @@ if (!_ok)
 	
 ParInput_EnableDeviceCallbacks();
 
-// theyre all int64s!!
-mycon = zero;
-mycontype = zero;
-myconfire_lasers = zero;
-myconanalog = zero;
-flag = false;
-
-justthisonce = false;
-glyphspr = -1;
-
-onActionEventCallback = function(pParam) {
-	show_debug_message("Action state change:");
-	show_debug_message(json_stringify(pParam));
-	
-	if (pParam.controllerHandle == mycon
-	&&  pParam.eEventType == ESteamInputActionEventType.k_DigitalAction) {
-		
-		var _dighandle = pParam.digitalAction.actionHandle;
-		
-		if (_dighandle == myconfire_lasers) {
-			var _digaction = pParam.digitalAction.digitalActionData;
-			if (_digaction.bActive && _digaction.bState) {
-				// clear kbd string before invoking a keyboard.
-				keyboard_string = "";
-				
-				if (flag)
-				ParUtils_ShowGamepadTextInput(
-					EGamepadTextInputMode.k_Normal,
-					EGamepadTextInputLineMode.k_SingleLine,
-					"A description:",
-					64,
-					"existing text"
-				);
-				else
-				ParUtils_ShowFloatingGamepadTextInput(
-					EFloatingGamepadTextInputMode.k_ModeSingleLine,
-					0,
-					window_get_height()/2,
-					window_get_width(),
-					window_get_height()/2
-				);
-			}
-		}
-	}
-};
-
+if (ParUtils_IsSteamInBigPictureMode()) {
+	window_set_fullscreen(true);
+}
 
 room_goto(Room_Steam_Main);
 

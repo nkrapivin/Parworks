@@ -1,0 +1,4 @@
+Specifically into <Steam Install Directory>/controller_config/
+
+(create the directory if it doesn't exist).
+

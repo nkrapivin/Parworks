@@ -176,6 +176,7 @@
   <ItemGroup>
     <ClInclude Include="Par.h" />
     <ClInclude Include="ParGM.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -183,6 +184,9 @@
     <ClCompile Include="ParInput.cpp" />
     <ClCompile Include="ParRemoteStorage.cpp" />
     <ClCompile Include="ParUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

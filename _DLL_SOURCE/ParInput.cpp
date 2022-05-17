@@ -395,7 +395,7 @@ static void _AddFilesDirToWhitelist(const char* str) {
 
 	if (lastsepind != thepath.npos) {
 		thepath = thepath.substr(0, lastsepind);
-		partrace("Adding directory '%s' to the whitelist", thepath.c_str());
+		//partrace("Adding directory '%s' to the whitelist", thepath.c_str());
 		ParGM()->AddDirectoryToBundleWhitelist(thepath.c_str());
 	}
 }

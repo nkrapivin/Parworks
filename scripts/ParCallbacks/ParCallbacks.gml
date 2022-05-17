@@ -11,6 +11,7 @@ enum EParCallbackFunction {
 	k_OnGamepadTextInputDismissed,
 	k_OnAppResumingFromSuspend,
 	k_OnSteamShutdown,
+	k_OnRemoteStorageLocalFileChange,
 	// and here it ends
 	k_Max
 };
@@ -69,6 +70,11 @@ function Par_OnAppResumingFromSuspend(pParam) {
 /// @param pParam SteamShutdown_t* see Steamworks SDK documentation
 function Par_OnSteamShutdown(pParam) {
 	return _Par_PerformCallbacks(EParCallbackFunction.k_OnSteamShutdown, pParam);
+}
+
+/// @param pParam RemoteStorageLocalFileChange_t* see Steamworks SDK documentation
+function Par_OnRemoteStorageLocalFileChange(pParam) {
+	return _Par_PerformCallbacks(EParCallbackFunction.k_OnRemoteStorageLocalFileChange, pParam);
 }
 
 /*-- DO NOT TOUCH THE STUFF BELOW --*/

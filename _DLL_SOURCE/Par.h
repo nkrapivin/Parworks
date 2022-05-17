@@ -56,6 +56,8 @@ private:
 
 	STEAM_CALLBACK( CParGMCalls, OnSteamShutdown,                     SteamShutdown_t                     );
 
+	STEAM_CALLBACK( CParGMCalls, OnRemoteStorageLocalFileChange,      RemoteStorageLocalFileChange_t      );
+
 	// -- end   -- //
 };
 

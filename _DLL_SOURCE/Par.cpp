@@ -203,6 +203,30 @@ static void Par_OnSteamShutdown(SteamShutdown_t* pParam) {
 	);
 }
 
+static void Par_OnRemoteStorageLocalFileChange(RemoteStorageLocalFileChange_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	RValue args[2]{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		sizeof(args) / sizeof(args[0]),
+		args
+	);
+}
+
 CParGMCalls::CParGMCalls() {
 	m_bIsReady = false;
 	// the internal steamworks callback fields have constructors and are auto-initialized.
@@ -274,6 +298,14 @@ void CParGMCalls::OnSteamShutdown(SteamShutdown_t* pParam) {
 	}
 
 	Par_OnSteamShutdown(pParam);
+}
+
+void CParGMCalls::OnRemoteStorageLocalFileChange(RemoteStorageLocalFileChange_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnRemoteStorageLocalFileChange(pParam);
 }
 
 parex

@@ -613,3 +613,24 @@ enum ETextFilteringContext {
 	k_Name = 3,	// Character or item name
 };
 
+enum ERemoteStorageLocalFileChange {
+	k_Invalid = 0,
+
+	// The file was updated from another device
+	k_FileUpdated = 1,
+
+	// The file was deleted by another device
+	k_FileDeleted = 2,
+};
+
+enum ERemoteStorageFilePathType {
+	k_Invalid = 0,
+	
+	// The file is directly accessed by the game and this is the full path
+	k_Absolute = 1,
+
+	// The file is accessed via the ISteamRemoteStorage API and this is the filename
+	k_APIFilename = 2,
+};
+
+
