@@ -60,6 +60,76 @@ pushActionSet = function(actionSetName, isDefault) {
 	}
 };
 
+activateActionSetLayer = function(deviceIndex, actionSetLayerName) {
+	if (!validDeviceIndex(deviceIndex)) {
+		return false;
+	}
+	
+	var _actionSetLayer = actionSets[$ actionSetLayerName];
+	ParInput_ActivateActionSetLayer(
+		(deviceIndex == allcons)
+		? allcons
+		: handles[@ deviceIndex],
+		_actionSetLayer.handle
+	);
+	return true;
+};
+
+deactivateActionSetLayer = function(deviceIndex, actionSetLayerName) {
+	if (!validDeviceIndex(deviceIndex)) {
+		return false;
+	}
+	
+	var _actionSetLayer = actionSets[$ actionSetLayerName];
+	ParInput_DeactivateActionSetLayer(
+		(deviceIndex == allcons)
+		? allcons
+		: handles[@ deviceIndex],
+		_actionSetLayer.handle
+	);
+	return true;
+};
+
+deactivateAllActionSetLayers = function(deviceIndex) {
+	if (!validDeviceIndex(deviceIndex)) {
+		return false;
+	}
+	
+	ParInput_DeactivateAllActionSetLayers(
+		(deviceIndex == allcons)
+		? allcons
+		: handles[@ deviceIndex]
+	);
+	return true;
+};
+
+getActiveActionSetLayers = function(deviceIndex) {
+	if (!validDeviceIndex(deviceIndex)) {
+		return false;
+	}
+	
+	var _handles = []; // array of action set layer handles, will be filled with names
+	ParInput_GetActiveActionSetLayers(
+		(deviceIndex == allcons)
+		? allcons
+		: handles[@ deviceIndex],
+		_handles
+	);
+	
+	for (var _i = 0; _i < array_length(_handles); ++_i) {
+		for (var _a = 0; _a < array_length(actionSetNames); ++_a) {
+			var _name = actionSetNames[@ _a];
+			if (actionSets[$ _name].handle == _handles[@ _i]) {
+				// turn a handle element into a string name
+				_handles[@ _i] = _name;
+				break;
+			}
+		}
+	}
+	
+	return _handles;
+};
+
 validDeviceIndex = function(deviceIndex) {
 	return (
 		!is_undefined(deviceIndex) &&
@@ -93,6 +163,10 @@ refreshDevices = function() {
 updateDevice = function(deviceIndex) {
 	if (!validDeviceIndex(deviceIndex)) {
 		return false;
+	}
+	
+	if (deviceIndex == allcons) {
+		throw "\nupdateDevice() cannot be used with all controllers.";
 	}
 	
 	var _myHandle = handles[@ deviceIndex]; // handle
@@ -141,7 +215,12 @@ getActionSet = function(deviceIndex) {
 		return undefined;
 	}
 	
-	var _myActionSet = ParInput_GetCurrentActionSet(handles[@ deviceIndex]);
+	var _myActionSet = ParInput_GetCurrentActionSet(
+		(deviceIndex == allcons)
+		? allcons
+		: handles[@ deviceIndex]
+	);
+	
 	for (var _i = 0; _i < array_length(actionSetNames); ++_i) {
 		var _name = actionSetNames[@ _i];
 		var _actionSet = actionSets[$ actionSetNames[@ _i]];
@@ -158,12 +237,20 @@ getActionData = function(deviceIndex, actionSetName, actionName) {
 		return undefined;
 	}
 	
+	if (deviceIndex == allcons) {
+		throw "\ngetActionData cannot be used with all controllers, pick one.";
+	}
+	
 	return actionSets[$ actionSetName].actions[$ actionName].data[@ deviceIndex];
 };
 
 getActionUIData = function(deviceIndex, actionSetName, actionName) {
 	if (!validDeviceIndex(deviceIndex)) {
 		return undefined;
+	}
+	
+	if (deviceIndex == allcons) {
+		throw "\ngetActionUIData cannot be used with all controllers, pick one.";
 	}
 	
 	var _action = actionSets[$ actionSetName].actions[$ actionName];
@@ -193,6 +280,10 @@ getActionUIData = function(deviceIndex, actionSetName, actionName) {
 getInputType = function(deviceIndex) {
 	if (!validDeviceIndex(deviceIndex)) {
 		return undefined;
+	}
+	
+	if (deviceIndex == allcons) {
+		throw "\ngetInputType cannot be used with all controllers, pick one.";
 	}
 	
 	return inputTypes[@ deviceIndex];
@@ -275,7 +366,18 @@ formatAnalog = function(dataStruct) {
 formatDigital = function(dataStruct) {
 	return
 		"state:" + (dataStruct.bState? "true": "false") +
-		",active=" + (dataStruct.bActive? "true": "false");
+		",active:" + (dataStruct.bActive? "true": "false");
+};
+
+vibraHelper = function(deviceIndex, ls, rs) {
+	if (!validDeviceIndex(deviceIndex)) {
+		return false;
+	}
+	
+	var _hnd = (deviceIndex == allcons) ? allcons : handles[@ deviceIndex];
+	ParInput_TriggerVibration(_hnd, ls, rs);
+	return true;
 };
 
 _d = 0;
+vflag = false;

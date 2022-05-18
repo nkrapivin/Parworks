@@ -15,7 +15,7 @@ if (_dc <= 0) {
 else {
 	
 	draw_text(50, 100 + ((_t++) * 30), "Input info (Press I to open Steam Input Configurator, arrows to scroll through devices):");
-	draw_text(50, 100 + ((_t++) * 30), "Press 'M' to activate Menu action set, 'G' to inGame action set.");
+	draw_text(50, 100 + ((_t++) * 30), "Press 'M' to activate Menu action set, 'G' to inGame action set. 'V' vibration");
 	draw_text(50, 100 + ((_t++) * 30), "Device: " + string(_d) + " out of " + string(_dc) + ", type = " + string(getInputType(_d)));
 	draw_text(50, 100 + ((_t++) * 30), "FYI all glyphs are fetched from Steamworks directly");
 	
@@ -39,6 +39,11 @@ else {
 	if (keyboard_check_pressed(ord("G"))) {
 		activateActionSet(_d, "InGameControls");
 		exit;
+	}
+	
+	if (keyboard_check_pressed(ord("V"))) {
+		vflag = !vflag;
+		vibraHelper(_d, vflag * 100000, vflag * 100000);
 	}
 	
 	var _a = getActionSet(_d);
