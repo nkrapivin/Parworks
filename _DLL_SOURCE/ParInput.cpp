@@ -400,8 +400,14 @@ static void _AddFilesDirToWhitelist(const char* str) {
 	if (lastsepind != thepath.npos) {
 		thepath = thepath.substr(0, lastsepind);
 		//partrace("Adding directory '%s' to the whitelist", thepath.c_str());
+		//partrace("Adding file '%s' to the whitelist", str);
+
+		// and now actually add both the directory and the filename...
 		ParGM()->AddDirectoryToBundleWhitelist(thepath.c_str());
 		ParGM()->AddFileToBundleWhitelist(str);
+		// obligatory #JustGameMakerThings
+		ParGM()->AddDirectoryToSaveWhitelist(thepath.c_str());
+		ParGM()->AddFileToSaveWhitelist(str);
 	}
 }
 
