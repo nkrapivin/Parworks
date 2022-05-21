@@ -65,6 +65,7 @@ funcdef(ParInput_GetConnectedControllers) {
 		SteamInput()->GetConnectedControllers(c.data())
 	};
 
+	CDisableCoW noCoW{ argument[0].arr };
 	for (int i{ 0 }; i < len; ++i) {
 		RValue tmp{ c[i] };
 		ParGM()->SET_RValue(
@@ -236,6 +237,7 @@ funcdef(ParInput_GetActiveActionSetLayers) {
 		)
 	};
 
+	CDisableCoW noCoW{ argument[0].arr };
 	for (int i{ 0 }; i < len; ++i) {
 		RValue tmp{ l[i] };
 		ParGM()->SET_RValue(
@@ -265,7 +267,7 @@ funcdef(ParInput_GetDigitalActionData) {
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
 
-	auto acdata{
+	InputDigitalActionData_t acdata{
 		SteamInput()->GetDigitalActionData(
 			ParGM()->YYGetInt64(argument, 0),
 			ParGM()->YYGetInt64(argument, 1)
@@ -294,6 +296,7 @@ funcdef(ParInput_GetDigitalActionOrigins) {
 		)
 	};
 
+	CDisableCoW noCoW{ argument[3].arr };
 	for (int i{ 0 }; i < l; ++i) {
 		RValue tmp{ ors[i] };
 		ParGM()->SET_RValue(
@@ -335,7 +338,7 @@ funcdef(ParInput_GetAnalogActionData) {
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
 
-	auto acdata{
+	InputAnalogActionData_t acdata{
 		SteamInput()->GetAnalogActionData(
 			ParGM()->YYGetInt64(argument, 0),
 			ParGM()->YYGetInt64(argument, 1)
@@ -367,6 +370,7 @@ funcdef(ParInput_GetAnalogActionOrigins) {
 		)
 	};
 
+	CDisableCoW noCoW{ argument[3].arr };
 	for (int i{ 0 }; i < l; ++i) {
 		RValue tmp{ ors[i] };
 		ParGM()->SET_RValue(
@@ -397,13 +401,14 @@ static void _AddFilesDirToWhitelist(const char* str) {
 		thepath = thepath.substr(0, lastsepind);
 		//partrace("Adding directory '%s' to the whitelist", thepath.c_str());
 		ParGM()->AddDirectoryToBundleWhitelist(thepath.c_str());
+		ParGM()->AddFileToBundleWhitelist(str);
 	}
 }
 
 funcdef(ParInput_GetGlyphPNGForActionOrigin) {
 	ensureargc(3);
 
-	auto str{
+	const char* str{
 		SteamInput()->GetGlyphPNGForActionOrigin(
 			parcast<EInputActionOrigin>(ParGM()->YYGetInt32(argument, 0)),
 			parcast<ESteamInputGlyphSize>(ParGM()->YYGetInt32(argument, 1)),
@@ -421,7 +426,7 @@ funcdef(ParInput_GetGlyphPNGForActionOrigin) {
 funcdef(ParInput_GetGlyphSVGForActionOrigin) {
 	ensureargc(2);
 
-	auto str{
+	const char* str{
 		SteamInput()->GetGlyphSVGForActionOrigin(
 			parcast<EInputActionOrigin>(ParGM()->YYGetInt32(argument, 0)),
 			ParGM()->YYGetUint32(argument, 2)
@@ -438,7 +443,7 @@ funcdef(ParInput_GetGlyphSVGForActionOrigin) {
 funcdef(ParInput_GetGlyphForActionOrigin_Legacy) {
 	ensureargc(2);
 
-	auto str{
+	const char* str{
 		SteamInput()->GetGlyphForActionOrigin_Legacy(
 			parcast<EInputActionOrigin>(ParGM()->YYGetInt32(argument, 0))
 		)
@@ -489,7 +494,7 @@ funcdef(ParInput_GetMotionData) {
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
-	auto mdata{
+	InputMotionData_t mdata{
 		SteamInput()->GetMotionData(
 			ParGM()->YYGetInt64(argument, 0)
 		)
@@ -680,9 +685,9 @@ funcdef(ParInput_GetDeviceBindingRevision) {
 	ensurekind(1, eRVK_OBJECT);
 	ensurekind(2, eRVK_OBJECT);
 
-	int major{ }, minor{ };
+	int major{ 0 }, minor{ 0 };
 
-	auto res{
+	bool res{
 		SteamInput()->GetDeviceBindingRevision(
 			ParGM()->YYGetInt64(argument, 0),
 			&major,

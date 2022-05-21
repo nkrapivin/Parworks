@@ -4,10 +4,10 @@
 #include "Par.h"
 #include "ParGM.h"
 
-static YYRunnerInterface _YY{};
-static CParGMCalls* _ParGMCalls{};
-TYYBuiltin F_ScriptExecute{};
-YYObjectBase* g_pGlobal{};
+static YYRunnerInterface _YY{ nullptr };
+static CParGMCalls* _ParGMCalls{ nullptr };
+TYYBuiltin F_ScriptExecute{ nullptr };
+YYObjectBase* g_pGlobal{ nullptr };
 
 const YYRunnerInterface* ParGM() {
 	return &_YY;

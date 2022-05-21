@@ -12,10 +12,10 @@ funcdef(ParRemoteStorage_GetLocalFileChange) {
 	ensurekind(1, eRVK_OBJECT);
 	ensurekind(2, eRVK_OBJECT);
 
-	ERemoteStorageLocalFileChange changeType{};
-	ERemoteStorageFilePathType filePathType{};
+	ERemoteStorageLocalFileChange changeType{ ERemoteStorageLocalFileChange::k_ERemoteStorageLocalFileChange_Invalid };
+	ERemoteStorageFilePathType filePathType{ ERemoteStorageFilePathType::k_ERemoteStorageFilePathType_Invalid };
 
-	auto filepath{
+	const char* filepath{
 		SteamRemoteStorage()->GetLocalFileChange(
 			ParGM()->YYGetInt32(argument, 0),
 			&changeType,

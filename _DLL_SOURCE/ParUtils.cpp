@@ -28,12 +28,12 @@ funcdef(ParUtils_GetEnteredGamepadTextInput) {
 	ensureargc(2);
 	ensurekind(0, eRVK_OBJECT);
 
-	auto mysiz{ ParGM()->YYGetUint32(argument, 1) };
+	uint32_t mysiz{ ParGM()->YYGetUint32(argument, 1) };
 
-	std::string outputBuffer{ };
+	std::string outputBuffer{ "" };
 	outputBuffer.resize(mysiz);
 
-	auto ok{
+	bool ok{
 		SteamUtils()->GetEnteredGamepadTextInput(
 			cparcast<char*>(outputBuffer.data()),
 			mysiz
@@ -112,10 +112,10 @@ funcdef(ParUtils_FilterText) {
 	ensurekind(2, eRVK_STRING);
 	ensurekind(3, eRVK_OBJECT);
 
-	auto stmid{ ParGM()->YYGetInt64(argument, 1) };
-	auto mysiz{ ParGM()->YYGetUint32(argument, 4) };
+	long long stmid{ ParGM()->YYGetInt64(argument, 1) };
+	uint32_t mysiz{ ParGM()->YYGetUint32(argument, 4) };
 
-	std::string outputText{};
+	std::string outputText{ "" };
 	outputText.resize(mysiz);
 
 	int l{

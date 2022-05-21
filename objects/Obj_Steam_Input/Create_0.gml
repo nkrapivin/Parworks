@@ -11,7 +11,7 @@
 internalInit = function() {
 	zero = int64("0"); // a null handle, yes, must be an int64
 	allcons = STEAM_INPUT_HANDLE_ALL_CONTROLLERS;
-	handles = []; // array of input handles
+	handles = array_create(STEAM_INPUT_MAX_COUNT, zero); // array of input handles
 	handlesCount = 0;
 	inputTypes = [];
 	defaultActionSet = "";
@@ -154,7 +154,7 @@ activateActionSet = function(deviceIndex, actionSetName) {
 };
 
 refreshDevices = function() {
-	array_resize(handles, 0); // not great for performance, oh well...
+	//array_resize(handles, 0); // not great for performance, oh well...
 	array_resize(inputTypes, 0);
 	handlesCount = ParInput_GetConnectedControllers(handles);
 	return handlesCount;

@@ -324,8 +324,30 @@ public:
 extern TYYBuiltin F_ScriptExecute;
 extern YYObjectBase* g_pGlobal;
 
+class CDisableCoW {
+
+private:
+
+	RefDynamicArrayOfRValue* m_pRefArray;
+
+	int m_iOldRefCount;
+
+public:
+
+	CDisableCoW(RefDynamicArrayOfRValue* pRefArray) : m_pRefArray{ pRefArray }, m_iOldRefCount{ pRefArray ? pRefArray->refcount : 0 } {
+		// will set the refcount to 1 (prevent CoW) and set it back once destructed.
+	};
+
+	~CDisableCoW() {
+		if (m_pRefArray) {
+			m_pRefArray->refcount = m_iOldRefCount;
+		}
+	}
+
+};
+
 #define funcdef(_FunctionName) parex void _FunctionName (RValue& Result, CInstance* pSelf, CInstance* pOther, int argument_count, RValue* argument)
 
 #define ensureargc(_ExpectedArgC) if (argument_count < _ExpectedArgC    ) { ParGM()->YYError("%s expected %d arguments got %d.", __FUNCTION__, _ExpectedArgC, argument_count); }
 #define ensurekind(_Index, _Type) if (argument[_Index].typeOf() != _Type) { ParGM()->YYError("%s invalid argument[%d] type expected %s got %s.", __FUNCTION__, _Index, eRVKindToString(_Type), argument[_Index].nameOf()); }
-
+//#define disablecow(_Index) CDisableCoW _CDisableCoW_ ## _Index { (&(argument[_Index].arr)) }
