@@ -336,6 +336,9 @@ public:
 
 	CDisableCoW(RefDynamicArrayOfRValue* pRefArray) : m_pRefArray{ pRefArray }, m_iOldRefCount{ pRefArray ? pRefArray->refcount : 0 } {
 		// will set the refcount to 1 (prevent CoW) and set it back once destructed.
+		if (m_pRefArray) {
+			m_pRefArray->refcount = 1;
+		}
 	};
 
 	~CDisableCoW() {
