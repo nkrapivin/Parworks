@@ -250,6 +250,10 @@ struct RValue {
 
 		return *this;
 	}
+
+	~RValue() {
+		ParGM()->FREE_RValue(this);
+	}
 };
 #pragma pack(pop)
 
@@ -353,4 +357,5 @@ public:
 
 #define ensureargc(_ExpectedArgC) if (argument_count < _ExpectedArgC    ) { ParGM()->YYError("%s expected %d arguments got %d.", __FUNCTION__, _ExpectedArgC, argument_count); }
 #define ensurekind(_Index, _Type) if (argument[_Index].typeOf() != _Type) { ParGM()->YYError("%s invalid argument[%d] type expected %s got %s.", __FUNCTION__, _Index, eRVKindToString(_Type), argument[_Index].nameOf()); }
+#define ensureiptr(_InterfacePtr) if (!                  (_InterfacePtr)) { Result = RValue{ }; /* return `undefined` */ return; }
 //#define disablecow(_Index) CDisableCoW _CDisableCoW_ ## _Index { (&(argument[_Index].arr)) }

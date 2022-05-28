@@ -95,5 +95,72 @@ if (ParUtils_IsSteamInBigPictureMode()) {
 	window_set_fullscreen(true);
 }
 
+
+var _filteredRef = {}; // .refval = <result>
+var _msg = "kek kok you dolboeb";
+var _msglen = string_byte_length(_msg) + 1;
+var _bInit = ParUtils_InitFilterText(0);
+var _wrote = ParUtils_FilterText(
+	ETextFilteringContext.k_GameContent,
+	steam_get_user_steam_id(),
+	_msg,
+	_filteredRef,
+	_msglen
+);
+
+var _kek = "Hello meow meow!";
+var _buff = buffer_create(string_byte_length(_kek) + 1, buffer_fixed, 1);
+buffer_write(_buff, buffer_string, _kek);
+
+Par_AttachToCallResult(
+	ParUser_RequestEncryptedAppTicket(buffer_get_address(_buff), buffer_get_size(_buff)),
+	function(pCallback, bIOFailure) {
+		if (bIOFailure) {
+			return false;
+		}
+		
+		var _sizeRef = {};
+		ParUser_GetEncryptedAppTicket(ptr(pointer_null), 0, _sizeRef);
+		var _size = _sizeRef.refval;
+		var _buff = buffer_create(_size, buffer_fixed, 1);
+		ParUser_GetEncryptedAppTicket(buffer_get_address(_buff), _size, _sizeRef);
+		
+		buffer_delete(_buff);
+		return true;
+		var _sock = network_create_socket(network_socket_tcp);
+		network_connect_raw(_sock, "127.0.0.1", 42069);
+		
+		var _netbuff = buffer_create(buffer_sizeof(buffer_u32) + buffer_get_size(_buff), buffer_fixed, 1);
+		buffer_write(_netbuff, buffer_u32, _size);
+		buffer_copy(_buff, 0, buffer_get_size(_buff), _netbuff, buffer_sizeof(buffer_u32));
+		network_send_raw(_sock, _netbuff, buffer_get_size(_netbuff));
+		
+		// wait a reply from a server:
+		/*
+		var _serverBuff = async_load[? "buffer"];
+		var _steamId = buffer_read(_serverBuff, buffer_u64);
+		var _appId = buffer_read(_serverBuff, buffer_u32);
+		var _issueTime = buffer_read(_serverBuff, buffer_u32); // in UNIX time
+		var _issueTimeGM = (_issueTime == 0) ? 0 : (((_issueTime + 0.5) / 86400) + 25569);
+		var _flags = buffer_read(_serverBuff, buffer_u32);
+		var _userDataLen = buffer_read(_serverBuff, buffer_u32);
+		var _valid =
+			_steamId != int64("0") &&
+			_appId == ParUtils_GetAppID() &&
+			_issueTime != 0 &&
+			_userDataLen != 0;
+		// read user data...
+		*/
+		
+		return true;
+	},
+	undefined
+);
+
+//show_message(Par_GMTimeToRTime(Par_RTimeToGMTime(1653398292)) == 1653398292);
+show_debug_message("bInit: " + string(_bInit));
+show_debug_message("wrote: " + string(_wrote));
+show_debug_message("Filtered text: " + _filteredRef.refval);
+
 room_goto(Room_Steam_Main);
 

@@ -2,12 +2,15 @@
 #include "ParGM.h"
 
 funcdef(ParRemoteStorage_GetLocalFileChangeCount) {
+	ensureiptr(SteamRemoteStorage());
+
 	Result = RValue{
 		SteamRemoteStorage()->GetLocalFileChangeCount()
 	};
 }
 
 funcdef(ParRemoteStorage_GetLocalFileChange) {
+	ensureiptr(SteamRemoteStorage());
 	ensureargc(3);
 	ensurekind(1, eRVK_OBJECT);
 	ensurekind(2, eRVK_OBJECT);
@@ -33,12 +36,16 @@ funcdef(ParRemoteStorage_GetLocalFileChange) {
 }
 
 funcdef(ParRemoteStorage_BeginFileWriteBatch) {
+	ensureiptr(SteamRemoteStorage());
+
 	Result = RValue{
 		SteamRemoteStorage()->BeginFileWriteBatch()
 	};
 }
 
 funcdef(ParRemoteStorage_EndFileWriteBatch) {
+	ensureiptr(SteamRemoteStorage());
+
 	Result = RValue{
 		SteamRemoteStorage()->EndFileWriteBatch()
 	};

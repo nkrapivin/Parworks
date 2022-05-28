@@ -176,13 +176,18 @@
   <ItemGroup>
     <ClInclude Include="Par.h" />
     <ClInclude Include="ParGM.h" />
+    <ClInclude Include="ParIDECheck.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Par.cpp" />
+    <ClCompile Include="ParCallResult.cpp" />
+    <ClCompile Include="ParIDECheck.cpp" />
     <ClCompile Include="ParInput.cpp" />
     <ClCompile Include="ParRemoteStorage.cpp" />
+    <ClCompile Include="ParUser.cpp" />
+    <ClCompile Include="ParUserStats.cpp" />
     <ClCompile Include="ParUtils.cpp" />
   </ItemGroup>
   <ItemGroup>

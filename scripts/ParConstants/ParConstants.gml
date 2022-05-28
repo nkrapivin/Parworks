@@ -4,6 +4,9 @@ function ParConstants() {
 	// enums k_ENameHere_Member get transpiled into ENameHere.k_Member for GML simplicity
 }
 
+// not really a Steam constant, but can be used for properly initializing null handles
+#macro Par_NullHandle ( int64( 0 ) )
+
 #macro STEAM_INPUT_MAX_COUNT (16)
 
 #macro STEAM_INPUT_MAX_ANALOG_ACTIONS (16)
@@ -633,4 +636,22 @@ enum ERemoteStorageFilePathType {
 	k_APIFilename = 2,
 };
 
+// Steam API call failure results
+enum ESteamAPICallFailure {
+	k_None = -1,			// no failure
+	k_SteamGone = 0,		// the local Steam process has gone away
+	k_NetworkFailure = 1,	// the network connection to Steam has been broken, or was already broken
+	// SteamServersDisconnected_t callback will be sent around the same time
+	// SteamServersConnected_t will be sent when the client is able to talk to the Steam servers again
+	k_InvalidHandle = 2,	// the SteamAPICall_t handle passed in no longer exists
+	k_MismatchedCallback = 3,	// GetAPICallResult() was called with the wrong callback type for this API call
+};
+
+enum ECheckFileSignature {
+	k_InvalidSignature = 0,
+	k_ValidSignature = 1,
+	k_FileNotFound = 2,
+	k_NoSignaturesFoundForThisApp = 3,
+	k_NoSignaturesFoundForThisFile = 4,
+};
 

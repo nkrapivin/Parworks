@@ -4,6 +4,7 @@
 #include <string>
 
 funcdef(ParInput_Init) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	
 	Result = RValue{
@@ -14,12 +15,15 @@ funcdef(ParInput_Init) {
 }
 
 funcdef(ParInput_Shutdown) {
+	ensureiptr(SteamInput());
+
 	Result = RValue{
 		SteamInput()->Shutdown()
 	};
 }
 
 funcdef(ParInput_SetInputActionManifestFilePath) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_STRING);
 
@@ -31,14 +35,20 @@ funcdef(ParInput_SetInputActionManifestFilePath) {
 }
 
 funcdef(ParInput_RunFrame) {
-	ensureargc(1);
+	ensureiptr(SteamInput());
 
-	SteamInput()->RunFrame(
-		ParGM()->YYGetBool(argument, 0)
-	);
+	if (argument_count < 1 || argument[0].typeOf() == eRVK_UNDEFINED) {
+		SteamInput()->RunFrame();
+	}
+	else {
+		SteamInput()->RunFrame(
+			ParGM()->YYGetBool(argument, 0)
+		);
+	}
 }
 
 funcdef(ParInput_BWaitForData) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 
 	Result = RValue{
@@ -50,12 +60,15 @@ funcdef(ParInput_BWaitForData) {
 }
 
 funcdef(ParInput_BNewDataAvailable) {
+	ensureiptr(SteamInput());
+
 	Result = RValue{
 		SteamInput()->BNewDataAvailable()
 	};
 }
 
 funcdef(ParInput_GetConnectedControllers) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_ARRAY);
 
@@ -80,6 +93,8 @@ funcdef(ParInput_GetConnectedControllers) {
 }
 
 funcdef(ParInput_EnableDeviceCallbacks) {
+	ensureiptr(SteamInput());
+
 	SteamInput()->EnableDeviceCallbacks();
 }
 
@@ -89,8 +104,8 @@ static void _EnableActionEventCallbacksFunc(SteamInputActionEvent_t *pParam) {
 		return;
 	}
 
-	RValue Result{ };
-	RValue args[2]{ RValue{ _EnableActionEventCallbacksFuncScriptIndex }, RValue{ } };
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ _EnableActionEventCallbacksFuncScriptIndex }, RValue{ } };
 
 	RValue _controllerHandle{ pParam->controllerHandle };
 	RValue _eEventType{ pParam->eEventType };
@@ -140,15 +155,16 @@ static void _EnableActionEventCallbacksFunc(SteamInputActionEvent_t *pParam) {
 	ParGM()->StructAddRValue(&args[1], "analogAction", &_analogAction);
 
 	F_ScriptExecute(
-		Result,
+		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
 funcdef(ParInput_EnableActionEventCallbacks) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 
 	_EnableActionEventCallbacksFuncScriptIndex = ParGM()->YYGetInt32(argument, 0);
@@ -161,6 +177,7 @@ funcdef(ParInput_EnableActionEventCallbacks) {
 }
 
 funcdef(ParInput_GetActionSetHandle) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_STRING);
 
@@ -172,6 +189,7 @@ funcdef(ParInput_GetActionSetHandle) {
 }
 
 funcdef(ParInput_ActivateActionSet) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
@@ -183,6 +201,7 @@ funcdef(ParInput_ActivateActionSet) {
 }
 
 funcdef(ParInput_GetCurrentActionSet) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -194,6 +213,7 @@ funcdef(ParInput_GetCurrentActionSet) {
 }
 
 funcdef(ParInput_ActivateActionSetLayer) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
@@ -205,6 +225,7 @@ funcdef(ParInput_ActivateActionSetLayer) {
 }
 
 funcdef(ParInput_DeactivateActionSetLayer) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
@@ -216,6 +237,7 @@ funcdef(ParInput_DeactivateActionSetLayer) {
 }
 
 funcdef(ParInput_DeactivateAllActionSetLayers) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -225,6 +247,7 @@ funcdef(ParInput_DeactivateAllActionSetLayers) {
 }
 
 funcdef(ParInput_GetActiveActionSetLayers) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_ARRAY);
 
@@ -252,6 +275,7 @@ funcdef(ParInput_GetActiveActionSetLayers) {
 }
 
 funcdef(ParInput_GetDigitalActionHandle) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_STRING);
 
@@ -263,6 +287,7 @@ funcdef(ParInput_GetDigitalActionHandle) {
 }
 
 funcdef(ParInput_GetDigitalActionData) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
@@ -280,6 +305,7 @@ funcdef(ParInput_GetDigitalActionData) {
 }
 
 funcdef(ParInput_GetDigitalActionOrigins) {
+	ensureiptr(SteamInput());
 	ensureargc(4);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
@@ -311,6 +337,7 @@ funcdef(ParInput_GetDigitalActionOrigins) {
 }
 
 funcdef(ParInput_GetStringForDigitalActionName) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -323,6 +350,7 @@ funcdef(ParInput_GetStringForDigitalActionName) {
 }
 
 funcdef(ParInput_GetAnalogActionHandle) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_STRING);
 
@@ -334,6 +362,7 @@ funcdef(ParInput_GetAnalogActionHandle) {
 }
 
 funcdef(ParInput_GetAnalogActionData) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
@@ -353,6 +382,7 @@ funcdef(ParInput_GetAnalogActionData) {
 }
 
 funcdef(ParInput_GetAnalogActionOrigins) {
+	ensureiptr(SteamInput());
 	ensureargc(4);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
@@ -412,6 +442,7 @@ static void _AddFilesDirToWhitelist(const char* str) {
 }
 
 funcdef(ParInput_GetGlyphPNGForActionOrigin) {
+	ensureiptr(SteamInput());
 	ensureargc(3);
 
 	const char* str{
@@ -430,6 +461,7 @@ funcdef(ParInput_GetGlyphPNGForActionOrigin) {
 }
 
 funcdef(ParInput_GetGlyphSVGForActionOrigin) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 
 	const char* str{
@@ -447,6 +479,7 @@ funcdef(ParInput_GetGlyphSVGForActionOrigin) {
 }
 
 funcdef(ParInput_GetGlyphForActionOrigin_Legacy) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 
 	const char* str{
@@ -463,6 +496,7 @@ funcdef(ParInput_GetGlyphForActionOrigin_Legacy) {
 }
 
 funcdef(ParInput_GetStringForActionOrigin) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 
 	ParGM()->YYCreateString(
@@ -474,6 +508,7 @@ funcdef(ParInput_GetStringForActionOrigin) {
 }
 
 funcdef(ParInput_GetStringForAnalogActionName) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -486,6 +521,7 @@ funcdef(ParInput_GetStringForAnalogActionName) {
 }
 
 funcdef(ParInput_StopAnalogActionMomentum) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_INT64);
@@ -497,6 +533,7 @@ funcdef(ParInput_StopAnalogActionMomentum) {
 }
 
 funcdef(ParInput_GetMotionData) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -522,6 +559,7 @@ funcdef(ParInput_GetMotionData) {
 }
 
 funcdef(ParInput_TriggerVibration) {
+	ensureiptr(SteamInput());
 	ensureargc(3);
 	ensurekind(0, eRVK_INT64);
 
@@ -533,6 +571,7 @@ funcdef(ParInput_TriggerVibration) {
 }
 
 funcdef(ParInput_TriggerVibrationExtended) {
+	ensureiptr(SteamInput());
 	ensureargc(5);
 	ensurekind(0, eRVK_INT64);
 
@@ -546,6 +585,7 @@ funcdef(ParInput_TriggerVibrationExtended) {
 }
 
 funcdef(ParInput_TriggerSimpleHapticEvent) {
+	ensureiptr(SteamInput());
 	ensureargc(6);
 	ensurekind(0, eRVK_INT64);
 
@@ -560,6 +600,7 @@ funcdef(ParInput_TriggerSimpleHapticEvent) {
 }
 
 funcdef(ParInput_SetLEDColor) {
+	ensureiptr(SteamInput());
 	ensureargc(5);
 	ensurekind(0, eRVK_INT64);
 
@@ -573,6 +614,7 @@ funcdef(ParInput_SetLEDColor) {
 }
 
 funcdef(ParInput_Legacy_TriggerHapticPulse) {
+	ensureiptr(SteamInput());
 	ensureargc(3);
 	ensurekind(0, eRVK_INT64);
 
@@ -584,6 +626,7 @@ funcdef(ParInput_Legacy_TriggerHapticPulse) {
 }
 
 funcdef(ParInput_Legacy_TriggerRepeatedHapticPulse) {
+	ensureiptr(SteamInput());
 	ensureargc(6);
 	ensurekind(0, eRVK_INT64);
 
@@ -598,6 +641,7 @@ funcdef(ParInput_Legacy_TriggerRepeatedHapticPulse) {
 }
 
 funcdef(ParInput_ShowBindingPanel) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -609,6 +653,7 @@ funcdef(ParInput_ShowBindingPanel) {
 }
 
 funcdef(ParInput_GetInputTypeForHandle) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -620,6 +665,7 @@ funcdef(ParInput_GetInputTypeForHandle) {
 }
 
 funcdef(ParInput_GetControllerForGamepadIndex) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 
 	Result = RValue{
@@ -630,6 +676,7 @@ funcdef(ParInput_GetControllerForGamepadIndex) {
 }
 
 funcdef(ParInput_GetGamepadIndexForController) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -641,6 +688,7 @@ funcdef(ParInput_GetGamepadIndexForController) {
 }
 
 funcdef(ParInput_GetStringForXboxOrigin) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 
 	ParGM()->YYCreateString(
@@ -652,6 +700,7 @@ funcdef(ParInput_GetStringForXboxOrigin) {
 }
 
 funcdef(ParInput_GetGlyphForXboxOrigin) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 
 	ParGM()->YYCreateString(
@@ -663,6 +712,7 @@ funcdef(ParInput_GetGlyphForXboxOrigin) {
 }
 
 funcdef(ParInput_GetActionOriginFromXboxOrigin) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 	ensurekind(0, eRVK_INT64);
 
@@ -675,6 +725,7 @@ funcdef(ParInput_GetActionOriginFromXboxOrigin) {
 }
 
 funcdef(ParInput_TranslateActionOrigin) {
+	ensureiptr(SteamInput());
 	ensureargc(2);
 
 	Result = RValue{
@@ -686,6 +737,7 @@ funcdef(ParInput_TranslateActionOrigin) {
 }
 
 funcdef(ParInput_GetDeviceBindingRevision) {
+	ensureiptr(SteamInput());
 	ensureargc(3);
 	ensurekind(0, eRVK_INT64);
 	ensurekind(1, eRVK_OBJECT);
@@ -708,6 +760,7 @@ funcdef(ParInput_GetDeviceBindingRevision) {
 }
 
 funcdef(ParInput_GetRemotePlaySessionID) {
+	ensureiptr(SteamInput());
 	ensureargc(1);
 	ensurekind(0, eRVK_INT64);
 
@@ -719,6 +772,8 @@ funcdef(ParInput_GetRemotePlaySessionID) {
 }
 
 funcdef(ParInput_GetSessionInputConfigurationSettings) {
+	ensureiptr(SteamInput());
+
 	Result = RValue{
 		parcast<int>(
 			SteamInput()->GetSessionInputConfigurationSettings()

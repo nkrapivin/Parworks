@@ -3,11 +3,13 @@
 
 #include "Par.h"
 #include "ParGM.h"
+#include <array>
 
 static YYRunnerInterface _YY{ nullptr };
 static CParGMCalls* _ParGMCalls{ nullptr };
 TYYBuiltin F_ScriptExecute{ nullptr };
 YYObjectBase* g_pGlobal{ nullptr };
+bool ParInIDE{ false };
 
 const YYRunnerInterface* ParGM() {
 	return &_YY;
@@ -21,7 +23,7 @@ static void Par_OnSteamInputConfigurationLoaded(SteamInputConfigurationLoaded_t*
 	}
 
 	RValue res { };
-	RValue args[2]{ RValue{ ind }, RValue { } };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
 
 	RValue iCallback{ pParam->k_iCallback };
 	RValue unAppID{ pParam->m_unAppID };
@@ -46,8 +48,8 @@ static void Par_OnSteamInputConfigurationLoaded(SteamInputConfigurationLoaded_t*
 		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
@@ -59,7 +61,7 @@ static void Par_OnSteamInputDeviceConnected(SteamInputDeviceConnected_t* pParam)
 	}
 
 	RValue res{ };
-	RValue args[2]{ RValue{ ind }, RValue { } };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
 
 	RValue iCallback{ pParam->k_iCallback };
 	RValue ulConnectedDeviceHandle{ pParam->m_ulConnectedDeviceHandle };
@@ -72,8 +74,8 @@ static void Par_OnSteamInputDeviceConnected(SteamInputDeviceConnected_t* pParam)
 		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
@@ -85,7 +87,7 @@ static void Par_OnSteamInputDeviceDisconnected(SteamInputDeviceDisconnected_t* p
 	}
 
 	RValue res{ };
-	RValue args[2]{ RValue{ ind }, RValue { } };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
 
 	RValue iCallback{ pParam->k_iCallback };
 	RValue ulDisconnectedDeviceHandle{ pParam->m_ulDisconnectedDeviceHandle };
@@ -98,8 +100,8 @@ static void Par_OnSteamInputDeviceDisconnected(SteamInputDeviceDisconnected_t* p
 		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
@@ -111,7 +113,7 @@ static void Par_OnFloatingGamepadTextInputDismissed(FloatingGamepadTextInputDism
 	}
 
 	RValue res{ };
-	RValue args[2]{ RValue{ ind }, RValue { } };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
 
 	RValue iCallback{ pParam->k_iCallback };
 
@@ -122,8 +124,8 @@ static void Par_OnFloatingGamepadTextInputDismissed(FloatingGamepadTextInputDism
 		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
@@ -135,7 +137,7 @@ static void Par_OnGamepadTextInputDismissed(GamepadTextInputDismissed_t* pParam)
 	}
 
 	RValue res{ };
-	RValue args[2]{ RValue{ ind }, RValue { } };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
 
 	RValue iCallback{ pParam->k_iCallback };
 	RValue bSubmitted{ pParam->m_bSubmitted };
@@ -150,8 +152,8 @@ static void Par_OnGamepadTextInputDismissed(GamepadTextInputDismissed_t* pParam)
 		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
@@ -163,7 +165,7 @@ static void Par_OnAppResumingFromSuspend(AppResumingFromSuspend_t* pParam) {
 	}
 
 	RValue res{ };
-	RValue args[2]{ RValue{ ind }, RValue { } };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
 
 	RValue iCallback{ pParam->k_iCallback };
 
@@ -174,8 +176,8 @@ static void Par_OnAppResumingFromSuspend(AppResumingFromSuspend_t* pParam) {
 		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
@@ -187,7 +189,7 @@ static void Par_OnSteamShutdown(SteamShutdown_t* pParam) {
 	}
 
 	RValue res{ };
-	RValue args[2]{ RValue{ ind }, RValue { } };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
 
 	RValue iCallback{ pParam->k_iCallback };
 
@@ -198,8 +200,8 @@ static void Par_OnSteamShutdown(SteamShutdown_t* pParam) {
 		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
@@ -211,7 +213,7 @@ static void Par_OnRemoteStorageLocalFileChange(RemoteStorageLocalFileChange_t* p
 	}
 
 	RValue res{ };
-	RValue args[2]{ RValue{ ind }, RValue { } };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
 
 	RValue iCallback{ pParam->k_iCallback };
 
@@ -222,8 +224,166 @@ static void Par_OnRemoteStorageLocalFileChange(RemoteStorageLocalFileChange_t* p
 		res,
 		parcast<CInstance*>(g_pGlobal),
 		parcast<CInstance*>(g_pGlobal),
-		sizeof(args) / sizeof(args[0]),
-		args
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnSteamServersConnected(SteamServersConnected_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnSteamServersDisconnected(SteamServersDisconnected_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue eResult{ pParam->m_eResult };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_eResult", &eResult);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnSteamServerConnectFailure(SteamServerConnectFailure_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue eResult{ pParam->m_eResult };
+	RValue bStillRetrying{ pParam->m_bStillRetrying };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_eResult", &eResult);
+	ParGM()->StructAddRValue(&args[1], "m_bStillRetrying", &bStillRetrying);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnSteamAPICallCompleted(SteamAPICallCompleted_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue hAsyncCall{ pParam->m_hAsyncCall };
+	RValue _iCallback{ pParam->m_iCallback };
+	RValue cubParam{ pParam->m_cubParam };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_hAsyncCall", &hAsyncCall);
+	ParGM()->StructAddRValue(&args[1], "m_iCallback", &_iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_cubParam", &cubParam);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnLowBatteryPower(LowBatteryPower_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue nMinutesBatteryLeft{ pParam->m_nMinutesBatteryLeft };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_nMinutesBatteryLeft", &nMinutesBatteryLeft);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnIPCountry(IPCountry_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
 	);
 }
 
@@ -308,6 +468,54 @@ void CParGMCalls::OnRemoteStorageLocalFileChange(RemoteStorageLocalFileChange_t*
 	Par_OnRemoteStorageLocalFileChange(pParam);
 }
 
+void CParGMCalls::OnSteamServersConnected(SteamServersConnected_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnSteamServersConnected(pParam);
+}
+
+void CParGMCalls::OnSteamServersDisconnected(SteamServersDisconnected_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnSteamServersDisconnected(pParam);
+}
+
+void CParGMCalls::OnSteamServerConnectFailure(SteamServerConnectFailure_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnSteamServerConnectFailure(pParam);
+}
+
+void CParGMCalls::OnSteamAPICallCompleted(SteamAPICallCompleted_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnSteamAPICallCompleted(pParam);
+}
+
+void CParGMCalls::OnLowBatteryPower(LowBatteryPower_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnLowBatteryPower(pParam);
+}
+
+void CParGMCalls::OnIPCountry(IPCountry_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnIPCountry(pParam);
+}
+
 parex
 void YYExtensionInitialise(const struct YYRunnerInterface* _pFunctions, size_t _functions_size) {
 	partrace("Welcome! This is Parworks by @nkrapivindev. Built at: " __DATE__ " " __TIME__);
@@ -334,6 +542,10 @@ void YYExtensionInitialise(const struct YYRunnerInterface* _pFunctions, size_t _
 	if (!SteamUtils()) {
 		partrace("Steam doesn't seem to be initialised. The game will crash.");
 	}
+
+	if (ParInIDE) {
+		partrace("Running in IDE or Debug mode. RestartAppIfNecessary was not called.");
+	}
 }
 
 funcdef(Par_DummyFunction) {
@@ -351,4 +563,9 @@ funcdef(Par_ScriptCallSetup) {
 	ParGMCalls()->SetIsReady(true);
 
 	partrace("ScriptCallSetup is ready, script_executeptr=0x%p,cbselfptr=0x%p", F_ScriptExecute, g_pGlobal);
+}
+
+funcdef(Par_Shutdown) {
+	partrace("Shutting down Steam API...");
+	SteamAPI_Shutdown();
 }

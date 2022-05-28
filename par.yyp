@@ -29,6 +29,7 @@
     {"id":{"name":"Room_Steam_Overlay","path":"rooms/Room_Steam_Overlay/Room_Steam_Overlay.yy",},"order":10,},
     {"id":{"name":"Obj_Steam_Stat_Win","path":"objects/Obj_Steam_Stat_Win/Obj_Steam_Stat_Win.yy",},"order":3,},
     {"id":{"name":"Obj_Steam_Input","path":"objects/Obj_Steam_Input/Obj_Steam_Input.yy",},"order":1,},
+    {"id":{"name":"ParUtils","path":"scripts/ParUtils/ParUtils.yy",},"order":3,},
     {"id":{"name":"Obj_YoYo_textbox","path":"objects/Obj_YoYo_textbox/Obj_YoYo_textbox.yy",},"order":2,},
     {"id":{"name":"ParConstants","path":"scripts/ParConstants/ParConstants.yy",},"order":2,},
     {"id":{"name":"Obj_Steam_Overlay_Browser","path":"objects/Obj_Steam_Overlay_Browser/Obj_Steam_Overlay_Browser.yy",},"order":1,},
