@@ -655,3 +655,80 @@ enum ECheckFileSignature {
 	k_NoSignaturesFoundForThisFile = 4,
 };
 
+
+enum EFailureType { 
+	k_FlushedCallbackQueue, 
+	k_PipeFail,
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: Reasons a user may not use the Community Market.
+//          Used in MarketEligibilityResponse_t.
+//-----------------------------------------------------------------------------
+enum EMarketNotAllowedReasonFlags {
+	k_None = 0,
+
+	// A back-end call failed or something that might work again on retry
+	k_TemporaryFailure = (1 << 0),
+
+	// Disabled account
+	k_AccountDisabled = (1 << 1),
+
+	// Locked account
+	k_AccountLockedDown = (1 << 2),
+
+	// Limited account (no purchases)
+	k_AccountLimited = (1 << 3),
+
+	// The account is banned from trading items
+	k_TradeBanned = (1 << 4),
+
+	// Wallet funds aren't tradable because the user has had no purchase
+	// activity in the last year or has had no purchases prior to last month
+	k_AccountNotTrusted = (1 << 5),
+
+	// The user doesn't have Steam Guard enabled
+	k_SteamGuardNotEnabled = (1 << 6),
+
+	// The user has Steam Guard, but it hasn't been enabled for the required
+	// number of days
+	k_SteamGuardOnlyRecentlyEnabled = (1 << 7),
+
+	// The user has recently forgotten their password and reset it
+	k_RecentPasswordReset = (1 << 8),
+
+	// The user has recently funded his or her wallet with a new payment method
+	k_NewPaymentMethod = (1 << 9),
+
+	// An invalid cookie was sent by the user
+	k_InvalidCookie = (1 << 10),
+
+	// The user has Steam Guard, but is using a new computer or web browser
+	k_UsingNewDevice = (1 << 11),
+
+	// The user has recently refunded a store purchase by his or herself
+	k_RecentSelfRefund = (1 << 12),
+
+	// The user has recently funded his or her wallet with a new payment method that cannot be verified
+	k_NewPaymentMethodCannotBeVerified = (1 << 13),
+
+	// Not only is the account not trusted, but they have no recent purchases at all
+	k_NoRecentPurchases = (1 << 14),
+
+	// User accepted a wallet gift that was recently purchased
+	k_AcceptedWalletGift = (1 << 15)
+};
+
+// Error codes for use with the voice functions
+enum EVoiceResult {
+	k_OK = 0,
+	k_NotInitialized = 1,
+	k_NotRecording = 2,
+	k_NoData = 3,
+	k_BufferTooSmall = 4,
+	k_DataCorrupted = 5,
+	k_Restricted = 6,
+	k_UnsupportedCodec = 7,
+	k_ReceiverOutOfDate = 8,
+	k_ReceiverDidNotAnswer = 9
+};

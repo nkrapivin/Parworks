@@ -80,6 +80,20 @@ private:
 
 	STEAM_CALLBACK( CParGMCalls, OnIPCountry,                         IPCountry_t                         );
 
+	STEAM_CALLBACK( CParGMCalls, OnValidateAuthTicketResponse,        ValidateAuthTicketResponse_t        );
+
+	STEAM_CALLBACK( CParGMCalls, OnGameWebCallback,                   GameWebCallback_t                   );
+
+	STEAM_CALLBACK( CParGMCalls, OnGetAuthSessionTicketResponse,      GetAuthSessionTicketResponse_t      );
+
+	STEAM_CALLBACK( CParGMCalls, OnLicensesUpdated,                   LicensesUpdated_t                   );
+
+	STEAM_CALLBACK( CParGMCalls, OnIPCFailure,                        IPCFailure_t                        );
+
+	STEAM_CALLBACK( CParGMCalls, OnMicroTxnAuthorizationResponse,     MicroTxnAuthorizationResponse_t     );
+
+	STEAM_CALLBACK( CParGMCalls, OnClientGameServerDeny,              ClientGameServerDeny_t              );
+
 	// -- end   -- //
 };
 

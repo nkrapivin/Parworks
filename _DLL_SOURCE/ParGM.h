@@ -217,6 +217,7 @@ struct RValue {
 		RefDynamicArrayOfRValue* arr;
 		YYObjectBase* obj;
 		CScriptRef* scref;
+		CInstance* instptr;
 	};
 
 	unsigned flags;
@@ -232,6 +233,9 @@ struct RValue {
 	explicit RValue(unsigned long long v) : vu64{ v }, flags{ 0 }, kind{ eRVK_INT64 } {
 		// yes I know this is kinda wrong, but I want to be sure here...
 	};
+	explicit RValue(YYObjectBase* v) : obj{ v }, flags{ 0 }, kind{ eRVK_OBJECT } {};
+	explicit RValue(CInstance* v) : instptr{ v }, flags{ 0 }, kind{ eRVK_OBJECT } {};
+	explicit RValue(void* v) : ptr{ v }, flags{ 0 }, kind{ eRVK_PTR } {};
 	//explicit RValue(void* v) : ptr{ v }, flags{ 0 }, kind{ eRVK_PTR } {};
 
 	inline unsigned typeOf() const { return kind & eRVK_UNSET; }
@@ -353,9 +357,17 @@ public:
 
 };
 
-#define funcdef(_FunctionName) parex void _FunctionName (RValue& Result, CInstance* pSelf, CInstance* pOther, int argument_count, RValue* argument)
+#define funcdef(_FunctionName) parex void _FunctionName \
+	(RValue& Result, CInstance* pSelf, CInstance* pOther, int argument_count, RValue* argument)
 
-#define ensureargc(_ExpectedArgC) if (argument_count < _ExpectedArgC    ) { ParGM()->YYError("%s expected %d arguments got %d.", __FUNCTION__, _ExpectedArgC, argument_count); }
-#define ensurekind(_Index, _Type) if (argument[_Index].typeOf() != _Type) { ParGM()->YYError("%s invalid argument[%d] type expected %s got %s.", __FUNCTION__, _Index, eRVKindToString(_Type), argument[_Index].nameOf()); }
-#define ensureiptr(_InterfacePtr) if (!                  (_InterfacePtr)) { Result = RValue{ }; /* return `undefined` */ return; }
+#define ensureargc(_ExpectedArgC) if (argument_count < _ExpectedArgC    ) \
+	{ ParGM()->YYError("%s expected %d arguments got %d.", __FUNCTION__, _ExpectedArgC, argument_count); }
+
+#define ensurekind(_Index, _Type) if (argument[_Index].typeOf() != _Type) \
+	{ ParGM()->YYError("%s invalid argument[%d] type expected %s got %s.", __FUNCTION__, _Index, eRVKindToString(_Type), argument[_Index].nameOf()); }
+
+#define ensureiptr(_InterfacePtr) if (!                  (_InterfacePtr)) \
+	{ Result = RValue{ }; /* return `undefined` */ return; }
+
+
 //#define disablecow(_Index) CDisableCoW _CDisableCoW_ ## _Index { (&(argument[_Index].arr)) }

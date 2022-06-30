@@ -387,6 +387,203 @@ static void Par_OnIPCountry(IPCountry_t* pParam) {
 	);
 }
 
+static void Par_OnValidateAuthTicketResponse(ValidateAuthTicketResponse_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue SteamID{ pParam->m_SteamID.ConvertToUint64() };
+	RValue eAuthSessionResponse{ pParam->m_eAuthSessionResponse };
+	RValue OwnerSteamID{ pParam->m_OwnerSteamID.ConvertToUint64() };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_SteamID", &SteamID);
+	ParGM()->StructAddRValue(&args[1], "m_eAuthSessionResponse", &eAuthSessionResponse);
+	ParGM()->StructAddRValue(&args[1], "m_OwnerSteamID", &OwnerSteamID);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnGameWebCallback(GameWebCallback_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddString(&args[1], "m_szURL", pParam->m_szURL);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnGetAuthSessionTicketResponse(GetAuthSessionTicketResponse_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue hAuthTicket{ pParam->m_hAuthTicket };
+	RValue eResult{ pParam->m_eResult };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_hAuthTicket", &hAuthTicket);
+	ParGM()->StructAddRValue(&args[1], "m_eResult", &eResult);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnLicensesUpdated(LicensesUpdated_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnIPCFailure(IPCFailure_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue eFailureType{ pParam->m_eFailureType };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_eFailureType", &eFailureType);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnMicroTxnAuthorizationResponse(MicroTxnAuthorizationResponse_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue unAppID{ pParam->m_unAppID };
+	RValue ulOrderID{ pParam->m_ulOrderID };
+	RValue bAuthorized{ pParam->m_bAuthorized };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_unAppID", &unAppID);
+	ParGM()->StructAddRValue(&args[1], "m_ulOrderID", &ulOrderID);
+	ParGM()->StructAddRValue(&args[1], "m_bAuthorized", &bAuthorized);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
+static void Par_OnClientGameServerDeny(ClientGameServerDeny_t* pParam) {
+	int ind{ ParGM()->Script_Find_Id(__FUNCTION__) };
+
+	if (ind < 0) {
+		return;
+	}
+
+	RValue res{ };
+	std::array<RValue, 2> args{ RValue{ ind }, RValue { } };
+
+	RValue iCallback{ pParam->k_iCallback };
+	RValue uAppID{ pParam->m_uAppID };
+	RValue unGameServerIP{ pParam->m_unGameServerIP };
+	RValue usGameServerPort{ pParam->m_usGameServerPort };
+	RValue bSecure{ pParam->m_bSecure };
+	RValue uReason{ pParam->m_uReason };
+
+	ParGM()->StructCreate(&args[1]);
+	ParGM()->StructAddRValue(&args[1], "k_iCallback", &iCallback);
+	ParGM()->StructAddRValue(&args[1], "m_uAppID", &uAppID);
+	ParGM()->StructAddRValue(&args[1], "m_unGameServerIP", &unGameServerIP);
+	ParGM()->StructAddRValue(&args[1], "m_usGameServerPort", &usGameServerPort);
+	ParGM()->StructAddRValue(&args[1], "m_bSecure", &bSecure);
+	ParGM()->StructAddRValue(&args[1], "m_uReason", &uReason);
+
+	F_ScriptExecute(
+		res,
+		parcast<CInstance*>(g_pGlobal),
+		parcast<CInstance*>(g_pGlobal),
+		parcast<int>(args.size()),
+		args.data()
+	);
+}
+
 CParGMCalls::CParGMCalls() {
 	m_bIsReady = false;
 	// the internal steamworks callback fields have constructors and are auto-initialized.
@@ -394,7 +591,7 @@ CParGMCalls::CParGMCalls() {
 
 CParGMCalls* ParGMCalls() {
 	if (!_ParGMCalls) {
-		_ParGMCalls = new CParGMCalls();
+		_ParGMCalls = new CParGMCalls{};
 	}
 
 	return _ParGMCalls;
@@ -514,6 +711,62 @@ void CParGMCalls::OnIPCountry(IPCountry_t* pParam) {
 	}
 
 	Par_OnIPCountry(pParam);
+}
+
+void CParGMCalls::OnValidateAuthTicketResponse(ValidateAuthTicketResponse_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnValidateAuthTicketResponse(pParam);
+}
+
+void CParGMCalls::OnGameWebCallback(GameWebCallback_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnGameWebCallback(pParam);
+}
+
+void CParGMCalls::OnGetAuthSessionTicketResponse(GetAuthSessionTicketResponse_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnGetAuthSessionTicketResponse(pParam);
+}
+
+void CParGMCalls::OnLicensesUpdated(LicensesUpdated_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnLicensesUpdated(pParam);
+}
+
+void CParGMCalls::OnIPCFailure(IPCFailure_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnIPCFailure(pParam);
+}
+
+void CParGMCalls::OnMicroTxnAuthorizationResponse(MicroTxnAuthorizationResponse_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnMicroTxnAuthorizationResponse(pParam);
+}
+
+void CParGMCalls::OnClientGameServerDeny(ClientGameServerDeny_t* pParam) {
+	if (!m_bIsReady) {
+		return;
+	}
+
+	Par_OnClientGameServerDeny(pParam);
 }
 
 parex
